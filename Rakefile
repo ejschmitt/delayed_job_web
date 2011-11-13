@@ -17,8 +17,8 @@ Jeweler::Tasks.new do |gem|
   gem.name = "delayed_job_web"
   gem.homepage = "http://github.com/ejschmitt/delayed_job_web"
   gem.license = "MIT"
-  gem.summary = %Q{TODO: one-line summary of your gem}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.summary = "Web interface for delayed_job"
+  gem.description = "Web interface for delayed_job inspired by resque"
   gem.email = "ejschmitt@gmail.com"
   gem.authors = ["Erick Schmitt"]
   # dependencies defined in Gemfile

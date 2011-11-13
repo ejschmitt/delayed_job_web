@@ -27,7 +27,9 @@ pkg
 #
 # For MacOS:
 #
-#.DS_Store
+.DS_Store
+.rvmrc
+Gemfile.lock
 
 # For TextMate
 #*.tmproj
