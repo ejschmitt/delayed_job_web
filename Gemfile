@@ -1,6 +1,7 @@
 source "http://rubygems.org"
   gem "sinatra", '1.3.1'
   gem "haml", '3.1.3'
+  gem "delayed_job"
 
 group :development do
   gem "shoulda", ">= 0"

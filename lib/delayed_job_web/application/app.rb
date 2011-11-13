@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'delayed_job'
 
 class DelayedJobWeb < Sinatra::Base
 
@@ -15,13 +16,26 @@ class DelayedJobWeb < Sinatra::Base
     ]
   end
 
+  def delayed_job
+    begin
+      Delayed::Job
+    rescue
+      false
+    end
+  end
+
   get '/' do
-    haml :index
+    if delayed_job
+      haml :index
+    else
+      @message = "Unable to connected to Delayed::Job database"
+      haml :error
+    end
   end
 
 end
 
 # Run the app!
 #
-puts "Hello, you're running your web app from a gem!"
+puts "Hello, you're running delayed_job_web"
 DelayedJobWeb.run!

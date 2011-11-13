@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 #
 begin
-  require 'rain_singing/application/app.rb'
+  require 'delayed_job_web/application/app.rb'
 rescue LoadError => e
   require 'rubygems'
   path = File.expand_path '../../lib', __FILE__
