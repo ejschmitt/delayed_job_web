@@ -3,13 +3,14 @@ require 'sinatra'
 class DelayedJobWeb < Sinatra::Base
 
   set :static, true                             # set up static file routing
-  set :public, File.expand_path('..', __FILE__) # set up the static dir (with images/js/css inside)
+  set :public_folder, File.expand_path('..', __FILE__) # set up the static dir (with images/js/css inside)
   set :views,  File.expand_path('../views', __FILE__) # set up the views dir
+  set :haml, { :format => :html5 }
 
   # Your "actions" go here…
   #
   get '/' do
-    haml :'/index'
+    haml :index
   end
 
 end
