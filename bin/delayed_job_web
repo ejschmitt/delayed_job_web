@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+#
+begin
+  require 'rain_singing/application/app.rb'
+rescue LoadError => e
+  require 'rubygems'
+  path = File.expand_path '../../lib', __FILE__
+  $:.unshift(path) if File.directory?(path) && !$:.include?(path)
+  require 'delayed_job_web/application/app.rb'
+end
