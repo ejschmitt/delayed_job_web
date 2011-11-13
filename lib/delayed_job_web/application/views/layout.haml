@@ -2,6 +2,8 @@
 %html
   %head
     %title Delayed Job Web
+    %link(rel="stylesheet" type="text/css" href="stylesheets/reset.css")
+    %link(rel="stylesheet" type="text/css" href="stylesheets/style.css")
   %body
     %div.header
       %ul.nav
@@ -9,5 +11,13 @@
           %a.tab{:href => ''} Overview
         %li
           %a.tab{:href => ''} Working
-    = yield
+    %div#main
+      = yield
+    %div#footer
+      %p
+        Powered by
+        %a{:href => 'https://github.com/collectiveidea/delayed_job'} delayed_job
+        &
+        %a{:href => ''} delayed_job_web
+
 
