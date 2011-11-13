@@ -7,8 +7,14 @@ class DelayedJobWeb < Sinatra::Base
   set :views,  File.expand_path('../views', __FILE__) # set up the views dir
   set :haml, { :format => :html5 }
 
-  # Your "actions" go here…
-  #
+  def tabs
+    [
+      {name: 'Overview', path: '/'},
+      {name: 'Working', path: '/working'},
+      {name: 'Blah', path: '/blah'}
+    ]
+  end
+
   get '/' do
     haml :index
   end
