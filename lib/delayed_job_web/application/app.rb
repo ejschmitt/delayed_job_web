@@ -1,7 +1,19 @@
 require 'sinatra'
+require 'active_support'
+require 'active_record'
 require 'delayed_job'
 
+
 class DelayedJobWeb < Sinatra::Base
+  configure do
+    Delayed::Worker.backend = :active_record
+    config = YAML::load(File.open('config/database.yml'))
+    environment = Sinatra::Application.environment.to_s
+    ActiveRecord::Base.logger = Logger.new($stdout)
+    ActiveRecord::Base.establish_connection(
+      config[environment]
+    )
+  end
 
   set :static, true                             # set up static file routing
   set :public_folder, File.expand_path('..', __FILE__) # set up the static dir (with images/js/css inside)
@@ -17,11 +29,7 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   def delayed_job
-    begin
-      Delayed::Job
-    rescue
-      false
-    end
+    Delayed::Job
   end
 
   get '/' do
