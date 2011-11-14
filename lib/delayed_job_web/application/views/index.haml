@@ -1,22 +1,19 @@
 %h1
-  Overview -
-  = delayed_job.count
-  = delayed_job.count == 1 ? 'job' : 'jobs'
-  in the queue
+  Overview
 %p.intro
   The list below shows the an overview of the jobs in the delayed_job queue.
-  %table
+  %table.overview
     %tr
       %th Status
       %th Count
     %tr
-      %td Job Count
+      %td.status Jobs in queue
       %td= delayed_job.count
     %tr
-      %td Jobs not yet run
+      %td.status Jobs not yet run
       %td= delayed_job.where(last_error: nil).count
     %tr
-      %td Failed Jobs
+      %td.status Failed Jobs
       %td= delayed_job.where('last_error is not null').count
 -# %table.jobs
 -#   %tr

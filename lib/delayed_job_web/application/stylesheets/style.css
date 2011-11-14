@@ -31,11 +31,11 @@ body { padding:0; margin:0; }
 #main h1.wi { margin-bottom:5px;}
 #main p.sub { font-size:95%; color:#999;}
 
-#main table.queues { width:40%;}
-#main table.queues td.queue { font-weight:bold; width:50%;}
-#main table.queues tr.failed td { border-top:2px solid; font-size:90%; }
-#main table.queues tr.failure td { background:#ffecec; border-top:2px solid #d37474; font-size:90%; color:#d37474;}
-#main table.queues tr.failure td a{ color:#d37474;}
+#main table.overview { width:40%;}
+#main table.overview td.status { font-weight:bold; width:50%;}
+#main table.overview tr.failed td { border-top:2px solid; font-size:90%; }
+#main table.overview tr.failure td { background:#ffecec; border-top:2px solid #d37474; font-size:90%; color:#d37474;}
+#main table.overview tr.failure td a{ color:#d37474;}
 
 #main table.jobs td.class { font-family:Monaco, "Courier New", monospace; font-size:90%; width:50%;}
 #main table.jobs td.args{ width:50%;}
