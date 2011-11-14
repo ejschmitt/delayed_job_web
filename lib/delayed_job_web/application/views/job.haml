@@ -1,0 +1,27 @@
+%li
+  %dl
+    %dt ID
+    %dd= job.id
+    %dt Priority
+    %dd= job.priority
+    %dt Attempts
+    %dd= job.attempts
+    %dt Handler
+    %dd= job.handler
+    - if job.last_error
+      %dt Last Error
+      %dd= job.last_error
+    - if job.run_at
+      %dt Run At
+      %dd= job.run_at
+    - if job.locked_at
+      %dt Locked At
+      %dd= job.locked_at
+    - if job.locked_at
+      %dt Locked By
+      %dd= job.locked_by
+    -if job.failed_at
+      %dt Failed At
+      %dd= job.failed_at
+    %dt Created At
+    %dd= job.created_at

@@ -1,0 +1,7 @@
+%h1
+  Enqueued
+%p.sub
+  The list below contains all jobs currently in the delayed_job queue
+%ul.job
+  - @jobs.each do |job|
+    = partial :job, {:job => job}
