@@ -1,12 +1,44 @@
 %h1
-  Overview
+  Overview -
   = delayed_job.count
+  = delayed_job.count == 1 ? 'job' : 'jobs'
+  in the queue
 %p.intro
-  The list below shows the current jobs in the delayed_job queue.
-%table.jobs
-  %tr
-    %th PID
-    %th Priority
-  %tr
-    %td 12321
-    %td 0
+  The list below shows the an overview of the jobs in the delayed_job queue.
+  %table
+    %tr
+      %th Status
+      %th Count
+    %tr
+      %td Job Count
+      %td= delayed_job.count
+    %tr
+      %td Jobs not yet run
+      %td= delayed_job.where(last_error: nil).count
+    %tr
+      %td Failed Jobs
+      %td= delayed_job.where('last_error is not null').count
+-# %table.jobs
+-#   %tr
+-#     %th ID
+-#     %th Priority
+-#     %th Attempts
+-#     %th Handler
+-#     %th Last Error
+-#     %th Run At
+-#     %th Locked At
+-#     %th Locked By
+-#     %th Failed At
+-#     %th Created At
+-#     - delayed_job.all.each do |dj|
+-#       %tr
+-#         %td= dj.id
+-#         %td= dj.priority
+-#         %td= dj.attempts
+-#         %td= dj.handler
+-#         %td= dj.last_error
+-#         %td= dj.run_at
+-#         %td= dj.locked_at
+-#         %td= dj.locked_by
+-#         %td= dj.failed_at
+-#         %td= dj.created_at
