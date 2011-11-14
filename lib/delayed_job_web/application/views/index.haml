@@ -12,7 +12,7 @@
     %tr
       %td.status Working Jobs
       %td= @working_count
-    %tr
+    %tr{:class => @failed_count > 0 ? 'failure' : ''}
       %td.status Failed Jobs
       %td= @failed_count
 -# %table.jobs
