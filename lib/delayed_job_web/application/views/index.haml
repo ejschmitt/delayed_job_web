@@ -8,13 +8,13 @@
       %th Count
     %tr
       %td.status Jobs in queue
-      %td= delayed_job.count
+      %td= @job_count
     %tr
-      %td.status Jobs not yet run
-      %td= delayed_job.where(last_error: nil).count
+      %td.status Working Jobs
+      %td= @working_count
     %tr
       %td.status Failed Jobs
-      %td= delayed_job.where('last_error is not null').count
+      %td= @failed_count
 -# %table.jobs
 -#   %tr
 -#     %th ID

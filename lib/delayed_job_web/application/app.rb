@@ -24,21 +24,37 @@ class DelayedJobWeb < Sinatra::Base
     [
       {name: 'Overview', path: '/'},
       {name: 'Working', path: '/working'},
-      {name: 'Blah', path: '/blah'}
+      {name: 'Failed', path: '/failed'}
     ]
   end
 
   def delayed_job
-    Delayed::Job
+    begin
+      Delayed::Job
+    rescue
+      false
+    end
   end
 
   get '/' do
     if delayed_job
+      @job_count = delayed_job.count
+      @working_count = delayed_job.where(:attempts => 0).count
+      @failed_count = delayed_job.where('last_error is not null').count
       haml :index
     else
       @message = "Unable to connected to Delayed::Job database"
       haml :error
     end
+  end
+
+  get '/working' do
+    haml :working
+  end
+
+  get '/failed' do
+    @failed_jobs = delayed_job.where('last_error is not null')
+    haml :failed
   end
 
 end
