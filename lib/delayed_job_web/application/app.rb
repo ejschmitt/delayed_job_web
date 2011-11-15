@@ -25,12 +25,15 @@ class DelayedJobWeb < Sinatra::Base
       {name: 'Overview', path: '/'},
       {name: 'Enqueued', path: '/enqueued'},
       {name: 'Working', path: '/working'},
-      {name: 'Failed', path: '/failed'}
+      {name: 'Pending', path: '/pending'},
+      {name: 'Failed', path: '/failed'},
+      {name: 'Stats', path: '/stats'}
     ]
   end
 
   def delayed_job
-    begin
+    puts 'Delayed'
+    @@delayed_job ||= begin
       Delayed::Job
     rescue
       false
@@ -40,8 +43,8 @@ class DelayedJobWeb < Sinatra::Base
   get '/' do
     if delayed_job
       @job_count = delayed_job.count
-      @working_count = delayed_job.where(:attempts => 0).count
-      @failed_count = delayed_job.where('last_error is not null').count
+      @working_count = delayed_jobs(:working).count
+      @failed_count = delayed_jobs(:failed).count
       haml :index
     else
       @message = "Unable to connected to Delayed::Job database"
@@ -55,13 +58,33 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   get '/working' do
-    @jobs = delayed_job.where('locked_at is not null')
+    @jobs = delayed_jobs(:working)
     haml :working
   end
 
+  get '/pending' do
+    @jobs = delayed_jobs(:pending)
+    haml :pending
+  end
+
   get '/failed' do
-    @jobs = delayed_job.where('last_error is not null')
+    @jobs = delayed_jobs(:failed)
     haml :failed
+  end
+
+  get '/stats' do
+    haml :stats
+  end
+
+  def delayed_jobs(type)
+    case type
+    when :working
+      delayed_job.where('locked_at is not null')
+    when :failed
+      delayed_job.where('last_error is not null')
+    when :pending
+      delayed_job.where(:attempts => 0)
+    end
   end
 
   def partial(template, local_vars = {})

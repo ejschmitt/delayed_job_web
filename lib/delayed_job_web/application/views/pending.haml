@@ -1,0 +1,7 @@
+%h1
+  Pending
+%p.sub
+  The list below contains jobs currently being processed
+%ul.job
+  - @jobs.each do |job|
+    = partial :job, {:job => job}

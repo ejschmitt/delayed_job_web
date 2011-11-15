@@ -1,20 +1,20 @@
 %h1
   Overview
 %p.intro
-  The list below shows the an overview of the jobs in the delayed_job queue.
-  %table.overview
-    %tr
-      %th Status
-      %th Count
-    %tr
-      %td.status
-        %a{:href => '/enqueued'} Enqueued Jobs
-      %td= @job_count
-    %tr
-      %td.status
-        %a{:href => '/working'} Working Jobs
-      %td= @working_count
-    %tr{:class => @failed_count > 0 ? 'failure' : ''}
-      %td.status
-        %a{:href => '/failed'} Failed Jobs
-      %td= @failed_count
+The list below shows an overview of the jobs in the delayed_job queue.
+%table.overview
+  %tr
+    %th Status
+    %th Count
+  %tr
+    %td.status
+      %a{:href => '/enqueued'} Enqueued Jobs
+    %td= @job_count
+  %tr
+    %td.status
+      %a{:href => '/working'} Working Jobs
+    %td= @working_count
+  %tr{:class => @failed_count > 0 ? 'failure' : ''}
+    %td.status
+      %a{:href => '/failed'} Failed Jobs
+    %td= @failed_count
