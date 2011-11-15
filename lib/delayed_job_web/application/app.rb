@@ -33,7 +33,7 @@ class DelayedJobWeb < Sinatra::Base
 
   def tabs
     [
-      {name: 'Overview', path: '/'},
+      {name: 'Overview', path: ''},
       {name: 'Enqueued', path: '/enqueued'},
       {name: 'Working', path: '/working'},
       {name: 'Pending', path: '/pending'},
@@ -43,7 +43,6 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   def delayed_job
-    puts request.path_info
     begin
       Delayed::Job
     rescue
