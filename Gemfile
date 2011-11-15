@@ -1,6 +1,6 @@
 source "http://rubygems.org"
-  gem "sinatra", '1.3.1'
-  gem "haml", '3.1.3'
+  gem "sinatra", '>= 0.9.2'
+  gem "haml", '~> 3.1.3'
   gem 'activerecord', '> 3.0.0'
   gem 'delayed_job', '> 2.0.3'
 

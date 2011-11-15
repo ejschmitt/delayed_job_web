@@ -1,1 +1,1 @@
-require 'delayed_job_web/application'
+require 'delayed_job_web/application/app'

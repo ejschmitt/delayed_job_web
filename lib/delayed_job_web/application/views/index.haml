@@ -8,12 +8,16 @@ The list below shows an overview of the jobs in the delayed_job queue.
     %th Count
   %tr
     %td.status
-      %a{:href => '/enqueued'} Enqueued Jobs
+      %a{:href => u('/enqueued')} Enqueued Jobs
     %td= @job_count
   %tr
     %td.status
       %a{:href => '/working'} Working Jobs
     %td= @working_count
+  %tr
+    %td.status
+      %a{:href => '/pending'} Pending Jobs
+    %td= @pending_count
   %tr{:class => @failed_count > 0 ? 'failure' : ''}
     %td.status
       %a{:href => '/failed'} Failed Jobs

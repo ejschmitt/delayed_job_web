@@ -2,8 +2,10 @@ require 'sinatra'
 require 'active_support'
 require 'active_record'
 require 'delayed_job'
+require 'haml'
 
 configure do
+  puts "Configuring delayed_job_web"
   Delayed::Worker.backend = :active_record
   config = YAML::load(File.open('config/database.yml'))
   environment = Sinatra::Application.environment.to_s
@@ -20,6 +22,15 @@ class DelayedJobWeb < Sinatra::Base
   set :views,  File.expand_path('../views', __FILE__) # set up the views dir
   set :haml, { :format => :html5 }
 
+  def url_path(*path_parts)
+    [ path_prefix, path_parts ].join("/").squeeze('/')
+  end
+  alias_method :u, :url_path
+
+  def path_prefix
+    request.env['SCRIPT_NAME']
+  end
+
   def tabs
     [
       {name: 'Overview', path: '/'},
@@ -32,8 +43,8 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   def delayed_job
-    puts 'Delayed'
-    @@delayed_job ||= begin
+    puts request.path_info
+    begin
       Delayed::Job
     rescue
       false
@@ -45,6 +56,7 @@ class DelayedJobWeb < Sinatra::Base
       @job_count = delayed_job.count
       @working_count = delayed_jobs(:working).count
       @failed_count = delayed_jobs(:failed).count
+      @pending_count = delayed_jobs(:pending).count
       haml :index
     else
       @message = "Unable to connected to Delayed::Job database"
@@ -98,5 +110,5 @@ end
 
 # Run the app!
 #
-puts "Hello, you're running delayed_job_web"
-DelayedJobWeb.run!
+# puts "Hello, you're running delayed_job_web"
+# DelayedJobWeb.run!
