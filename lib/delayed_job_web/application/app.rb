@@ -11,7 +11,7 @@ configure do
   environment = Sinatra::Application.environment.to_s
   ActiveRecord::Base.logger = Logger.new($stdout)
   ActiveRecord::Base.establish_connection(
-    config[environment]
+    SHARED_DATABASE_URL || config[environment]
   )
 end
 

@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "bin/delayed_job_web",
+    "delayed_job_web.gemspec",
     "lib/delayed_job_web.rb",
     "lib/delayed_job_web/application/app.rb",
     "lib/delayed_job_web/application/stylesheets/reset.css",
