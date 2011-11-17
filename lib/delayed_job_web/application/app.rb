@@ -40,7 +40,6 @@ class DelayedJobWeb < Sinatra::Base
   set :public_folder, File.expand_path('..', __FILE__) # set up the static dir (with images/js/css inside)
   set :views,  File.expand_path('../views', __FILE__) # set up the views dir
   set :haml, { :format => :html5 }
-  set :root, File.dirname(__FILE__)
 
   def url_path(*path_parts)
     [ path_prefix, path_parts ].join("/").squeeze('/')
