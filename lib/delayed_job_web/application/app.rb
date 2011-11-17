@@ -35,10 +35,10 @@ configure :production do
 end
 
 class DelayedJobWeb < Sinatra::Base
-
-  set :static, true                             # set up static file routing
-  set :public, File.expand_path('..', __FILE__) # set up the static dir (with images/js/css inside)
-  set :views,  File.expand_path('../views', __FILE__) # set up the views dir
+  set :root, File.dirname(__FILE__)
+  set :static, true
+  set :public,  File.expand_path('../public', __FILE__)
+  set :views,  File.expand_path('../views', __FILE__)
   set :haml, { :format => :html5 }
 
   def url_path(*path_parts)
