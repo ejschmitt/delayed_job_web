@@ -82,28 +82,15 @@ class DelayedJobWeb < Sinatra::Base
     end
   end
 
-  get '/enqueued' do
-    @jobs = delayed_job.all
-    haml :enqueued
-  end
-
-  get '/working' do
-    @jobs = delayed_jobs(:working)
-    haml :working
-  end
-
-  get '/pending' do
-    @jobs = delayed_jobs(:pending)
-    haml :pending
-  end
-
-  get '/failed' do
-    @jobs = delayed_jobs(:failed)
-    haml :failed
-  end
-
   get '/stats' do
     haml :stats
+  end
+
+  %w(enqueued working pending failed).each do |page|
+    get "/#{page}" do
+      @jobs = delayed_jobs(page.to_sym)
+      haml page.to_sym
+    end
   end
 
   get "/remove/:id" do
@@ -134,6 +121,8 @@ class DelayedJobWeb < Sinatra::Base
 
   def delayed_job_sql(type)
     case type
+    when :enqueued
+      ''
     when :working
       'locked_at is not null'
     when :failed
@@ -143,11 +132,42 @@ class DelayedJobWeb < Sinatra::Base
     end
   end
 
+  get "/?" do
+    redirect u(:index)
+  end
+
   def partial(template, local_vars = {})
     @partial = true
     haml(template.to_sym, {:layout => false}, local_vars)
   ensure
     @partial = false
+  end
+
+  %w( index enqueued working pending failed ).each do |page|
+    get "/#{page}.poll" do
+      show_for_polling(page)
+    end
+
+    get "/#{page}/:id.poll" do
+      show_for_polling(page)
+    end
+  end
+
+  def poll
+    if @polling
+      text = "Last Updated: #{Time.now.strftime("%H:%M:%S")}"
+    else
+      text = "<a href='#{u(request.path_info)}.poll' rel='poll'>Live Poll</a>"
+    end
+    "<p class='poll'>#{text}</p>"
+  end
+
+  def show_for_polling(page)
+    content_type "text/html"
+    @polling = true
+    # show(page.to_sym, false).gsub(/\s{1,}/, ' ')
+    @jobs = delayed_jobs(page.to_sym)
+    haml(page.to_sym, {:layout => false})
   end
 
 end

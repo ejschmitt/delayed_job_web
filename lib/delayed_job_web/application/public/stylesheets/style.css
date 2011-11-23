@@ -63,7 +63,7 @@ body { padding:0; margin:0; }
 #footer { padding:10px 5%; background:#efefef; color:#999; font-size:85%; line-height:1.5; border-top:5px solid #ccc; padding-top:10px;}
 #footer p a { color:#999;}
 
-#main p.poll { background:url(poll.png) no-repeat 0 2px; padding:3px 0; padding-left:23px; float:right; font-size:85%; }
+#main p.poll { background:url(../images/poll.png) no-repeat 0 2px; padding:3px 0; padding-left:23px; float:right; font-size:85%; }
 
 #main ul.job {}
 #main ul.job li {background:-webkit-gradient(linear, left top, left bottom, from(#efefef), to(#fff)) #efefef; margin-top:10px; padding:10px; overflow:hidden; -webkit-border-radius:5px; border:1px solid #ccc; }
