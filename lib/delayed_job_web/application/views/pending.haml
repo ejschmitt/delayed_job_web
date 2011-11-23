@@ -1,5 +1,8 @@
 %h1
   Pending
+- if @jobs.any?
+  %form{:method => 'POST', :action => u('requeue/all')}
+    %input{:type => 'submit', :value => 'Enqueue All Immediately'}
 %p.sub
   The list below contains jobs currently being processed.
 %ul.job

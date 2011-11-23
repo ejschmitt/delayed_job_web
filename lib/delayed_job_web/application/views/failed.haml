@@ -1,4 +1,10 @@
 %h1 Failed Jobs
+- if @jobs.any?
+  %form{:method => 'POST', :action => u('failed/clear')}
+    %input{:type => 'submit', :value => 'Clear Failed Jobs'}
+  %form{:method => 'POST', :action => u('requeue/all')}
+    %input{:type => 'submit', :value => 'Retry Failed Jobs'}
+
 %p.sub
   Showing
   = @jobs.count

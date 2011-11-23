@@ -118,14 +118,28 @@ class DelayedJobWeb < Sinatra::Base
     redirect back
   end
 
+  post "/failed/clear" do
+    delayed_job.destroy_all(delayed_job_sql(:failed))
+    redirect u('failed')
+  end
+
+  post "/requeue/all" do
+    delayed_jobs(:failed).each{|dj| dj.run_at = Time.now; dj.save}
+    redirect back
+  end
+
   def delayed_jobs(type)
+    delayed_job.where(delayed_job_sql(type))
+  end
+
+  def delayed_job_sql(type)
     case type
     when :working
-      delayed_job.where('locked_at is not null')
+      'locked_at is not null'
     when :failed
-      delayed_job.where('last_error is not null')
+      'last_error is not null'
     when :pending
-      delayed_job.where(:attempts => 0)
+      'attempts = 0'
     end
   end
 
