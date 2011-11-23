@@ -108,14 +108,14 @@ class DelayedJobWeb < Sinatra::Base
 
   get "/remove/:id" do
     delayed_job.find(params[:id]).delete
-    redirect u('failed')
+    redirect back
   end
 
   get "/requeue/:id" do
     job = delayed_job.find(params[:id])
     job.run_at = Time.now
     job.save
-    redirect u('failed')
+    redirect back
   end
 
   def delayed_jobs(type)
