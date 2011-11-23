@@ -1,7 +1,12 @@
 %li
   %dl
     %dt ID
-    %dd= job.id
+    %dd
+      = job.id
+      %div.controls
+        %a{:rel => 'retry', :href => u("requeue/#{job.id}")}Retry
+        or
+        %a{:rel => 'remove', :href => u("remove/#{job.id}")}Remove
     %dt Priority
     %dd= job.priority
     %dt Attempts
@@ -10,7 +15,12 @@
     %dd= job.handler
     - if job.last_error
       %dt Last Error
-      %dd= job.last_error
+      %dd
+        %div.backtrace
+          = job.last_error[0..100] + '...'
+        %a{:href => '#', :class => 'backtrace'} Toggle full message
+        %div.backtrace.full.hide
+          = job.last_error
     - if job.run_at
       %dt Run At
       %dd= job.run_at

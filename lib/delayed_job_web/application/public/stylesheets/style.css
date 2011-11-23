@@ -1,5 +1,6 @@
 html { background:#efefef; font-family:Arial, Verdana, sans-serif; font-size:13px; }
 body { padding:0; margin:0; }
+.hide { display:none; }
 
 .header { background:#000; padding:8px 5% 0 5%; border-bottom:1px solid #444;border-bottom:5px solid #3B5998;}
 .header h1 { color:#333; font-size:90%; font-weight:bold; margin-bottom:6px;}

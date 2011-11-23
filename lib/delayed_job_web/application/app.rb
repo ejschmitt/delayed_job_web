@@ -18,7 +18,7 @@ end
 configure :production do
   puts "Configuring delayed_job_web"
   db = ENV["DATABASE_URL"]
-  if db.match(/postgres:\/\/(.*):(.*)@(.*)\/(.*)/) 
+  if db.match(/postgres:\/\/(.*):(.*)@(.*)\/(.*)/)
     username = $1
     password = $2
     hostname = $3
@@ -104,6 +104,18 @@ class DelayedJobWeb < Sinatra::Base
 
   get '/stats' do
     haml :stats
+  end
+
+  get "/remove/:id" do
+    delayed_job.find(params[:id]).delete
+    redirect u('failed')
+  end
+
+  get "/requeue/:id" do
+    job = delayed_job.find(params[:id])
+    job.run_at = Time.now
+    job.save
+    redirect u('failed')
   end
 
   def delayed_jobs(type)
