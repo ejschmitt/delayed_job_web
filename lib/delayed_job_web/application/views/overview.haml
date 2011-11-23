@@ -9,16 +9,17 @@
   %tr
     %td.status
       %a{:href => u('/enqueued')} Enqueued Jobs
-    %td= @job_count
+    %td= delayed_job.count
   %tr
     %td.status
       %a{:href => u('/working')} Working Jobs
-    %td= @working_count
+    %td= delayed_jobs(:working).count
   %tr
     %td.status
       %a{:href => u('/pending')} Pending Jobs
-    %td= @pending_count
-  %tr{:class => @failed_count > 0 ? 'failure' : ''}
+    %td= delayed_jobs(:pending).count
+  %tr{:class => delayed_jobs(:failed).count > 0 ? 'failure' : ''}
     %td.status
       %a{:href => u('/failed')} Failed Jobs
-    %td= @failed_count
+    %td= delayed_jobs(:failed).count
+= poll

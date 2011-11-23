@@ -52,7 +52,7 @@ class DelayedJobWeb < Sinatra::Base
 
   def tabs
     [
-      {name: 'Overview', path: ''},
+      {name: 'Overview', path: '/overview'},
       {name: 'Enqueued', path: '/enqueued'},
       {name: 'Working', path: '/working'},
       {name: 'Pending', path: '/pending'},
@@ -69,13 +69,9 @@ class DelayedJobWeb < Sinatra::Base
     end
   end
 
-  get '/' do
+  get '/overview' do
     if delayed_job
-      @job_count = delayed_job.count
-      @working_count = delayed_jobs(:working).count
-      @failed_count = delayed_jobs(:failed).count
-      @pending_count = delayed_jobs(:pending).count
-      haml :index
+      haml :overview
     else
       @message = "Unable to connected to Delayed::Job database"
       haml :error
@@ -133,7 +129,7 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   get "/?" do
-    redirect u(:index)
+    redirect u(:overview)
   end
 
   def partial(template, local_vars = {})
@@ -143,7 +139,7 @@ class DelayedJobWeb < Sinatra::Base
     @partial = false
   end
 
-  %w( index enqueued working pending failed ).each do |page|
+  %w(overview enqueued working pending failed stats) .each do |page|
     get "/#{page}.poll" do
       show_for_polling(page)
     end
