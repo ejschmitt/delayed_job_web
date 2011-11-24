@@ -1,9 +1,0 @@
-= delayed_job_web
-
-A resque inspired (read: stolen) interface for delayed_job.
-
-== Copyright
-
-Copyright (c) 2011 Erick Schmitt. See LICENSE.txt for
-further details.
-
