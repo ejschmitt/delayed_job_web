@@ -5,6 +5,13 @@ A [resque][0] inspired (read: stolen) interface for delayed_job.
 This gem is written to work with rails 3 applications using
 activerecord.
 
+Some features:
+
+* Easily view jobs enqueued, working, pending, and failed.
+* Queue any single job. or all pending jobs, to run immediately.
+* Remove a failed job, or easily remove all failed jobs.
+* Watch delayed_job operation with live ajax polling.
+
 Quick Start For Rails 3 Applications
 ------------------------------------
 
