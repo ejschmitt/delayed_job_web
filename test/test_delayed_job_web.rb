@@ -4,8 +4,23 @@ require 'delayed_job_web/application/app'
 ENV['RACK_ENV'] = 'test'
 
 class Delayed::Job
+  class DelayedJobFake < Array
+    # fake out arel
+    def order(*args)
+      DelayedJobFake.new
+    end
+
+    def offset(*args)
+      DelayedJobFake.new
+    end
+
+    def limit(*args)
+      DelayedJobFake.new
+    end
+  end
+
   def self.where(*args)
-    []
+    DelayedJobFake.new
   end
 
   def self.count(*args)
