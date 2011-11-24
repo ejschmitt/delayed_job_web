@@ -5,24 +5,24 @@
 
 Gem::Specification.new do |s|
   s.name = %q{delayed_job_web}
-  s.version = "0.1.11"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Erick Schmitt"]
-  s.date = %q{2011-11-23}
+  s.date = %q{2011-11-24}
   s.default_executable = %q{delayed_job_web}
   s.description = %q{Web interface for delayed_job inspired by resque}
   s.email = %q{ejschmitt@gmail.com}
   s.executables = ["delayed_job_web"]
   s.extra_rdoc_files = [
     "LICENSE.txt",
-    "README.rdoc"
+    "README.markdown"
   ]
   s.files = [
     ".document",
     "Gemfile",
     "LICENSE.txt",
-    "README.rdoc",
+    "README.markdown",
     "Rakefile",
     "VERSION",
     "bin/delayed_job_web",
