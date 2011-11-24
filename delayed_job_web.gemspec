@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{delayed_job_web}
-  s.version = "0.1.10"
+  s.version = "0.1.11"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Erick Schmitt"]
@@ -39,6 +39,7 @@ Gem::Specification.new do |s|
     "lib/delayed_job_web/application/views/failed.haml",
     "lib/delayed_job_web/application/views/job.haml",
     "lib/delayed_job_web/application/views/layout.haml",
+    "lib/delayed_job_web/application/views/next_more.haml",
     "lib/delayed_job_web/application/views/overview.haml",
     "lib/delayed_job_web/application/views/pending.haml",
     "lib/delayed_job_web/application/views/stats.haml",
