@@ -1,0 +1,6 @@
+- if start - per_page >= 0 || start + per_page <= total_size
+  %p.pagination
+    - if start - per_page >= 0
+      %a{:href => "#{current_page}?start=#{start - per_page}", :class => 'less'} &laquo; less
+    - if start + per_page < total_size
+      %a{:href => "#{current_page}?start=#{start + per_page}", :class => 'more'} more &raquo;

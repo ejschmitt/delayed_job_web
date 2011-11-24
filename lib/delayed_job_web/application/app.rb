@@ -11,6 +11,18 @@ class DelayedJobWeb < Sinatra::Base
   set :views,  File.expand_path('../views', __FILE__)
   set :haml, { :format => :html5 }
 
+  def current_page
+    url_path request.path_info.sub('/','')
+  end
+
+  def start
+    params[:start].to_i
+  end
+
+  def per_page
+    5
+  end
+
   def url_path(*path_parts)
     [ path_prefix, path_parts ].join("/").squeeze('/')
   end
@@ -54,7 +66,8 @@ class DelayedJobWeb < Sinatra::Base
 
   %w(enqueued working pending failed).each do |page|
     get "/#{page}" do
-      @jobs = delayed_jobs(page.to_sym)
+      @jobs = delayed_jobs(page.to_sym).order('created_at desc').offset(start).limit(per_page)
+      @all_jobs = delayed_jobs(page.to_sym)
       haml page.to_sym
     end
   end
