@@ -3,6 +3,7 @@ source "http://rubygems.org"
   gem "haml", '~> 3.1.3'
   gem 'activerecord', '> 3.0.0'
   gem 'delayed_job', '> 2.0.3'
+  gem 'rdoc'
 
 group :development do
   gem "shoulda", ">= 0"
