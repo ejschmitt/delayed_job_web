@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Erick Schmitt"]
-  s.date = %q{2011-11-24}
+  s.date = %q{2011-12-07}
   s.default_executable = %q{delayed_job_web}
   s.description = %q{Web interface for delayed_job inspired by resque}
   s.email = %q{ejschmitt@gmail.com}
@@ -62,6 +62,7 @@ Gem::Specification.new do |s|
       s.add_runtime_dependency(%q<haml>, ["~> 3.1.3"])
       s.add_runtime_dependency(%q<activerecord>, ["> 3.0.0"])
       s.add_runtime_dependency(%q<delayed_job>, ["> 2.0.3"])
+      s.add_runtime_dependency(%q<rdoc>, [">= 0"])
       s.add_development_dependency(%q<shoulda>, [">= 0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.6.4"])
@@ -72,6 +73,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<haml>, ["~> 3.1.3"])
       s.add_dependency(%q<activerecord>, ["> 3.0.0"])
       s.add_dependency(%q<delayed_job>, ["> 2.0.3"])
+      s.add_dependency(%q<rdoc>, [">= 0"])
       s.add_dependency(%q<shoulda>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.0.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
@@ -83,6 +85,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<haml>, ["~> 3.1.3"])
     s.add_dependency(%q<activerecord>, ["> 3.0.0"])
     s.add_dependency(%q<delayed_job>, ["> 2.0.3"])
+    s.add_dependency(%q<rdoc>, [">= 0"])
     s.add_dependency(%q<shoulda>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.0.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
