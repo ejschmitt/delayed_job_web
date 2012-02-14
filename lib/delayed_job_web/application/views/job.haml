@@ -12,7 +12,7 @@
     %dd= job.priority
     %dt Attempts
     %dd= job.attempts
-    - if job.queue
+    - if job.respond_to?(:queue) && job.queue
       %dt Queue
       %dd= job.queue
     %dt Handler
