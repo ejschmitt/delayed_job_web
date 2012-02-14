@@ -2,7 +2,8 @@
   %dl
     %dt ID
     %dd
-      = job.id
+      %a{:name => job.id}
+      %a{:href => "##{job.id}"}=job.id
       %div.controls
         %a{:rel => 'retry', :href => u("requeue/#{job.id}")}Retry
         or
@@ -11,6 +12,9 @@
     %dd= job.priority
     %dt Attempts
     %dd= job.attempts
+    - if job.queue
+      %dt Queue
+      %dd= job.queue
     %dt Handler
     %dd
       %pre= job.handler
