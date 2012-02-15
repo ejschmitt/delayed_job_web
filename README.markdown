@@ -33,7 +33,7 @@ Add a route to your application for accessing the interface
 match "/delayed_job" => DelayedJobWeb, :anchor => false
 ```
 
-You probably want to password protect the interfce, an easy way is to add something like this your config.ru file
+You probably want to password protect the interface, an easy way is to add something like this your config.ru file
 
 ```ruby
 if Rails.env.production?
