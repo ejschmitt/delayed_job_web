@@ -80,6 +80,7 @@ class DelayedJobWeb < Sinatra::Base
   get "/requeue/:id" do
     job = delayed_job.find(params[:id])
     job.run_at = Time.now
+    job.failed_at = nil
     job.save
     redirect back
   end
