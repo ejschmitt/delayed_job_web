@@ -79,9 +79,7 @@ class DelayedJobWeb < Sinatra::Base
 
   get "/requeue/:id" do
     job = delayed_job.find(params[:id])
-    job.run_at = Time.now
-    job.failed_at = nil
-    job.save
+    trigger_job(job)
     redirect back
   end
 
@@ -91,7 +89,7 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   post "/requeue/all" do
-    delayed_jobs(:failed).each{|dj| dj.run_at = Time.now; dj.save}
+    delayed_jobs(:failed).each{|dj| trigger_job(dj)}
     redirect back
   end
 
@@ -131,6 +129,12 @@ class DelayedJobWeb < Sinatra::Base
     get "/#{page}/:id.poll" do
       show_for_polling(page)
     end
+  end
+
+  def trigger_job(job)
+    job.run_at = Time.now
+    job.failed_at = nil
+    job.save
   end
 
   def poll
