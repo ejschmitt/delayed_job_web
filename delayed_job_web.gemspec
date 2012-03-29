@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{delayed_job_web}
-  s.version = "1.1.0"
+  s.version = "1.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Erick Schmitt"]
-  s.date = %q{2012-02-14}
+  s.date = %q{2012-03-29}
   s.default_executable = %q{delayed_job_web}
   s.description = %q{Web interface for delayed_job inspired by resque}
   s.email = %q{ejschmitt@gmail.com}
