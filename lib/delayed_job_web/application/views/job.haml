@@ -28,15 +28,15 @@
           %pre= job.last_error
     - if job.run_at
       %dt Run At
-      %dd.time= job.run_at
+      %dd.time= job.run_at.rfc822
     - if job.locked_at
       %dt Locked At
-      %dd.time= job.locked_at
+      %dd.time= job.locked_at.rfc822
     - if job.locked_by
       %dt Locked By
-      %dd= job.locked_by
+      %dd= job.locked_by.rfc822
     - if job.failed_at
       %dt Failed At
-      %dd.time= job.failed_at
+      %dd.time= job.failed_at.rfc822
     %dt Created At
-    %dd.time= job.created_at
+    %dd.time= job.created_at.rfc822
