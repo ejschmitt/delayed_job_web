@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640" />
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Delayed job web by ejschmitt</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/ejschmitt/delayed_job_web">Fork Me on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>Delayed job web</h1>
+            <h2>Resque like web interface for delayed job</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <section id="downloads">
+        <span class="inner">
+          <a href="https://github.com/ejschmitt/delayed_job_web/zipball/master" class="zip"><em>download</em> .ZIP</a><a href="https://github.com/ejschmitt/delayed_job_web/tarball/master" class="tgz"><em>download</em> .TGZ</a>
+        </span>
+      </section>
+
+      <span class="banner-fix"></span>
+
+      <section id="main_content">
+        <h1>delayed_job_web</h1>
+
+<p>A <a href="https://github.com/defunkt/resque">resque</a> inspired (read: stolen) interface for delayed_job.
+This gem is written to work with rails 3 applications using
+activerecord.</p>
+
+<p>Some features:</p>
+
+<ul>
+<li>Easily view jobs enqueued, working, pending, and failed.</li>
+<li>Queue any single job. or all pending jobs, to run immediately.</li>
+<li>Remove a failed job, or easily remove all failed jobs.</li>
+<li>Watch delayed_job operation with live ajax polling.</li>
+</ul><h2>Quick Start For Rails 3 Applications</h2>
+
+<p>Add the dependency to your Gemfile</p>
+
+<div class="highlight">
+<pre><span class="n">gem</span> <span class="s2">"delayed_job_web"</span>
+</pre>
+</div>
+
+
+<p>Install it...</p>
+
+<div class="highlight">
+<pre><span class="n">bundle</span>
+</pre>
+</div>
+
+
+<p>Add a route to your application for accessing the interface</p>
+
+<div class="highlight">
+<pre><span class="n">match</span> <span class="s2">"/delayed_job"</span> <span class="o">=&gt;</span> <span class="no">DelayedJobWeb</span><span class="p">,</span> <span class="ss">:anchor</span> <span class="o">=&gt;</span> <span class="kp">false</span>
+</pre>
+</div>
+
+
+<p>You probably want to password protect the interface, an easy way is to add something like this your config.ru file</p>
+
+<div class="highlight">
+<pre><span class="k">if</span> <span class="no">Rails</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">production?</span>
+  <span class="no">DelayedJobWeb</span><span class="o">.</span><span class="n">use</span> <span class="no">Rack</span><span class="o">::</span><span class="no">Auth</span><span class="o">::</span><span class="no">Basic</span> <span class="k">do</span> <span class="o">|</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">|</span>
+    <span class="n">username</span> <span class="o">==</span> <span class="s1">'username'</span>
+    <span class="n">password</span> <span class="o">==</span> <span class="s1">'password'</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<h2>The Interface - Yea, a ripoff of resque-web</h2>
+
+<p><img src="http://dl.dropbox.com/u/1506097/Screenshots/delayed_job_web_1.png" alt="Screen shot"></p>
+
+<p><img src="http://dl.dropbox.com/u/1506097/Screenshots/delayed_job_web_2.png" alt="Screen shot"></p>
+
+<h2>Author</h2>
+
+<p>Erick Schmitt - <a href="http://twitter.com/ejschmitt">@ejschmitt</a></p>
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>this project by <a href="https://github.com/ejschmitt">ejschmitt</a> can be found on <a href="https://github.com/ejschmitt/delayed_job_web">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
