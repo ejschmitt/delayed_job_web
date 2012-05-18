@@ -34,7 +34,7 @@
       %dd.time= job.locked_at.rfc822
     - if job.locked_by
       %dt Locked By
-      %dd= job.locked_by.rfc822
+      %dd= job.locked_by
     - if job.failed_at
       %dt Failed At
       %dd.time= job.failed_at.rfc822
