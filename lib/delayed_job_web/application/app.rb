@@ -102,11 +102,11 @@ class DelayedJobWeb < Sinatra::Base
     when :enqueued
       ''
     when :working
-      'locked_at is not null'
+      {:locked_at.exists => true}
     when :failed
-      'last_error is not null'
+      {:last_error.exists => true}
     when :pending
-      'attempts = 0'
+      {:attempts => 0}
     end
   end
 
