@@ -94,7 +94,7 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   def delayed_jobs(type)
-    delayed_job.where(delayed_job_sql(type))
+    delayed_job.where(delayed_job_sql(type, delayed_job))
   end
 
   def order_by_type(criteria)
@@ -105,14 +105,22 @@ class DelayedJobWeb < Sinatra::Base
     end
   end
 
-  def delayed_job_sql(type)
+  def delayed_job_sql(type, delayed_job)
     case type
     when :enqueued
-      ''
+      nil
     when :working
-      {:locked_at.exists => true}
+      if delayed_job.superclass == ActiveRecord::Base
+        'locked_at is not null'
+      else
+        {:locked_at.exists => true}
+      end
     when :failed
-      {:last_error.exists => true}
+      if delayed_job.superclass == ActiveRecord::Base
+        'last_error is not null'
+      else
+        {:last_error.exists => true}
+      end
     when :pending
       {:attempts => 0}
     end
