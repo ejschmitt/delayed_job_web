@@ -66,7 +66,7 @@ class DelayedJobWeb < Sinatra::Base
 
   %w(enqueued working pending failed).each do |page|
     get "/#{page}" do
-      @jobs = delayed_jobs(page.to_sym).order('created_at desc, id desc').offset(start).limit(per_page)
+      @jobs = order_by_type(delayed_jobs(page.to_sym)).offset(start).limit(per_page)
       @all_jobs = delayed_jobs(page.to_sym)
       haml page.to_sym
     end
@@ -95,6 +95,14 @@ class DelayedJobWeb < Sinatra::Base
 
   def delayed_jobs(type)
     delayed_job.where(delayed_job_sql(type))
+  end
+
+  def order_by_type(criteria)
+    if criteria.is_a?(Mongoid::Criteria) 
+      criteria.desc(:created_at).desc(:id)
+    else
+      criteria.order('created_at desc, id desc')
+    end
   end
 
   def delayed_job_sql(type)
