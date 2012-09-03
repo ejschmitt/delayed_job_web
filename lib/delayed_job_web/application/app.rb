@@ -96,7 +96,7 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   def order_by_type(criteria)
-    if criteria.is_a?(Mongoid::Criteria) 
+    if OrmStatusControl::mongoid_loaded? && criteria.is_a?(Mongoid::Criteria) 
       criteria.desc(:created_at).desc(:id)
     else
       criteria.order('created_at desc, id desc')
@@ -108,13 +108,13 @@ class DelayedJobWeb < Sinatra::Base
     when :enqueued
       nil
     when :working
-      if delayed_job.superclass == ActiveRecord::Base
+      if OrmStatusControl::active_record_loaded? && delayed_job.superclass == ActiveRecord::Base
         'locked_at is not null'
       else
         {:locked_at.exists => true}
       end
     when :failed
-      if delayed_job.superclass == ActiveRecord::Base
+      if OrmStatusControl::active_record_loaded? && delayed_job.superclass == ActiveRecord::Base
         'last_error is not null'
       else
         {:last_error.exists => true}

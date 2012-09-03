@@ -13,8 +13,8 @@ require 'shoulda'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'orm_status_control'
-OrmStatusControl::has_orm = true
-OrmStatusControl::skip_loading = true
+OrmStatusControl::mongoid = true
+OrmStatusControl::active_record = true
 require 'delayed_job_web'
 
 class Test::Unit::TestCase

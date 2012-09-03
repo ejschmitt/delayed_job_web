@@ -1,17 +1,19 @@
 require 'orm_status_control'
-if not OrmStatusControl::skip_loading
+if not OrmStatusControl::active_record_loaded?
   begin
     require 'active_record'
-    OrmStatusControl::has_orm ||= true
+    OrmStatusControl::active_record = true
   rescue LoadError => e
     module ActiveRecord
       class Base
       end
     end
   end
+end
+if not OrmStatusControl::mongoid_loaded?
   begin
     require 'mongoid'
-    OrmStatusControl::has_orm ||= true
+    OrmStatusControl::mongoid = true
   rescue LoadError => e
     module Mongoid
       class Criteria  < Array
@@ -19,5 +21,5 @@ if not OrmStatusControl::skip_loading
     end
   end
 end
-raise LoadError.new 'No orm defined. Use ActiveRecord or Mongoid' unless OrmStatusControl::has_orm
+raise LoadError.new 'No orm/odm defined. Use ActiveRecord or Mongoid' unless OrmStatusControl::has_orm?
 require 'delayed_job_web/application/app'
