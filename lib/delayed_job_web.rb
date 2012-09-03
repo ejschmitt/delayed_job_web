@@ -4,10 +4,6 @@ if not OrmStatusControl::active_record_loaded?
     require 'active_record'
     OrmStatusControl::active_record = true
   rescue LoadError => e
-    module ActiveRecord
-      class Base
-      end
-    end
   end
 end
 if not OrmStatusControl::mongoid_loaded?
@@ -15,10 +11,6 @@ if not OrmStatusControl::mongoid_loaded?
     require 'mongoid'
     OrmStatusControl::mongoid = true
   rescue LoadError => e
-    module Mongoid
-      class Criteria  < Array
-      end
-    end
   end
 end
 raise LoadError.new 'No orm/odm defined. Use ActiveRecord or Mongoid' unless OrmStatusControl::has_orm?
