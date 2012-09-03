@@ -1,10 +1,9 @@
-begin
-  Delayed.send(:remove_const, :Job)
-  Object.send(:remove_const, :Mongoid)
-rescue
-end
 module Mongoid
   class Criteria < Array
+  end
+end
+module ActiveRecord
+  class Base
   end
 end
 class Delayed::Job < ActiveRecord::Base

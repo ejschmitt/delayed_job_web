@@ -1,8 +1,6 @@
-begin
-  Delayed.send(:remove_const, :Job)
-  Object.send(:remove_const, :Mongoid)
-rescue
-end
+Delayed.send(:remove_const, :Job)
+Object.send(:remove_const, :Mongoid)
+
 module Mongoid
   class Criteria < Array
     def desc(*args)
