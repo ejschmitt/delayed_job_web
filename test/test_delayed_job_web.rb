@@ -4,8 +4,8 @@ require 'delayed_job_web/application/app'
 
 ENV['RACK_ENV'] = 'test'
 
-
 class TestDelayedJobWebActiveRecord < Test::Unit::TestCase
+  
   include Rack::Test::Methods
   def app
     DelayedJobWeb.new
