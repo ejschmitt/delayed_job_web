@@ -9,4 +9,6 @@ group :development do
   gem "bundler", "> 1.0.0"
   gem "jeweler", "~> 1.6.4"
   gem "rack-test", ">= 0"
+  gem "mongoid"
+  gem "activerecord"
 end

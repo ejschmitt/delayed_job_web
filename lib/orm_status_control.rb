@@ -1,11 +1,8 @@
 module OrmStatusControl
-  def self.status
-    @orm_status ||= OrmStatus.new
-  end
-  class OrmStatus
-    def initialize
-      @has_orm = false
-    end
+  class << self 
+    @has_orm = false
+    @skip_loading = false
     attr_accessor :has_orm
+    attr_accessor :skip_loading
   end
 end
