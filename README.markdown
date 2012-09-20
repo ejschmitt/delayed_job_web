@@ -38,8 +38,7 @@ You probably want to password protect the interface, an easy way is to add somet
 ```ruby
 if Rails.env.production?
   DelayedJobWeb.use Rack::Auth::Basic do |username, password|
-    username == 'username'
-    password == 'password'
+    username == 'username' && password == 'password'
   end
 end
 ```
