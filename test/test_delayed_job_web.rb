@@ -1,34 +1,11 @@
 require 'helper'
 require 'rack/test'
 require 'delayed_job_web/application/app'
+
 ENV['RACK_ENV'] = 'test'
 
-class Delayed::Job
-  class DelayedJobFake < Array
-    # fake out arel
-    def order(*args)
-      DelayedJobFake.new
-    end
-
-    def offset(*args)
-      DelayedJobFake.new
-    end
-
-    def limit(*args)
-      DelayedJobFake.new
-    end
-  end
-
-  def self.where(*args)
-    DelayedJobFake.new
-  end
-
-  def self.count(*args)
-    0
-  end
-end
-
-class TestDelayedJobWeb < Test::Unit::TestCase
+class TestDelayedJobWebActiveRecord < Test::Unit::TestCase
+  
   include Rack::Test::Methods
   def app
     DelayedJobWeb.new
@@ -39,10 +16,13 @@ class TestDelayedJobWeb < Test::Unit::TestCase
   end
 
   # basic smoke test all the tabs
-  %w(overview enqueued working pending failed stats).each do |tab|
-    should "get '/#{tab}'" do
-      get "/#{tab}"
-      should_respond_with_success
+  %w(active_record mongo).each do |db|
+    require "#{db}_definitions"
+    %w(overview enqueued working pending failed stats).each do |tab|
+      should "get '/#{tab}' '#{db} version'" do
+        get "/#{tab}"
+        should_respond_with_success
+      end
     end
   end
 end

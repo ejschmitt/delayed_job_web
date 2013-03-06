@@ -1,6 +1,4 @@
 require 'sinatra/base'
-require 'active_support'
-require 'active_record'
 require 'delayed_job'
 require 'haml'
 
@@ -66,7 +64,7 @@ class DelayedJobWeb < Sinatra::Base
 
   %w(enqueued working pending failed).each do |page|
     get "/#{page}" do
-      @jobs = delayed_jobs(page.to_sym).order('created_at desc, id desc').offset(start).limit(per_page)
+      @jobs = order_by_type(delayed_jobs(page.to_sym)).offset(start).limit(per_page)
       @all_jobs = delayed_jobs(page.to_sym)
       haml page.to_sym
     end
@@ -94,19 +92,35 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   def delayed_jobs(type)
-    delayed_job.where(delayed_job_sql(type))
+    delayed_job.where(delayed_job_sql(type, delayed_job))
   end
 
-  def delayed_job_sql(type)
+  def order_by_type(criteria)
+    if OrmStatusControl::mongoid_loaded? && criteria.is_a?(Mongoid::Criteria) 
+      criteria.desc(:created_at).desc(:id)
+    else
+      criteria.order('created_at desc, id desc')
+    end
+  end
+
+  def delayed_job_sql(type, delayed_job)
     case type
     when :enqueued
-      ''
+      nil
     when :working
-      'locked_at is not null'
+      if OrmStatusControl::active_record_loaded? && delayed_job.superclass == ActiveRecord::Base
+        'locked_at is not null'
+      else
+        {:locked_at.exists => true}
+      end
     when :failed
-      'last_error is not null'
+      if OrmStatusControl::active_record_loaded? && delayed_job.superclass == ActiveRecord::Base
+        'last_error is not null'
+      else
+        {:last_error.exists => true}
+      end
     when :pending
-      'attempts = 0'
+      {:attempts => 0}
     end
   end
 
