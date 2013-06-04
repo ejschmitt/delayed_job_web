@@ -17,15 +17,15 @@
       %dd= job.queue
     %dt Handler
     %dd
-      %pre= job.handler
+      %pre&= job.handler
     - if job.last_error
       %dt Last Error
       %dd
         %div.backtrace
-          %pre= job.last_error[0..100] + '...'
+          %pre&= job.last_error[0..100] + '...'
         %a{:href => '#', :class => 'backtrace'} Toggle full message
         %div.backtrace.full.hide
-          %pre= job.last_error
+          %pre&= job.last_error
     - if job.run_at
       %dt Run At
       %dd.time= job.run_at.rfc822
