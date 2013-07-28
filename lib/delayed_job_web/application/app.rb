@@ -83,6 +83,12 @@ class DelayedJobWeb < Sinatra::Base
     redirect back
   end
 
+  get "/reload/:id" do
+    job = delayed_job.find(params[:id])
+    job.update_attributes(:run_at => Time.now, :failed_at => nil, :locked_by => nil, :locked_at => nil, :last_error => nil, :attempts => 0)
+    redirect back
+  end
+
   post "/failed/clear" do
     delayed_job.destroy_all(delayed_job_sql(:failed))
     redirect u('failed')
