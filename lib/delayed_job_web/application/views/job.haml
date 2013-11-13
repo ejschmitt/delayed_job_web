@@ -8,6 +8,8 @@
         %a{:rel => 'retry', :href => u("requeue/#{job.id}")}Retry
         or
         %a{:rel => 'remove', :href => u("remove/#{job.id}")}Remove
+        or
+        %a{:rel => 'reload_job', :href => u("reload/#{job.id}")}Reload Job
     %dt Priority
     %dd= job.priority
     %dt Attempts
