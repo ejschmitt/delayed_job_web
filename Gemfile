@@ -1,4 +1,5 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
+  gem "tilt", "1.4.1"
   gem "sinatra", '>= 0.9.2'
   gem "haml", '>= 3.1.3'
   gem 'activerecord', '> 3.0.0'
