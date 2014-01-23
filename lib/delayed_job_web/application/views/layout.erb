@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <title>Delayed Job Web</title>
+    <link rel="stylesheet" type="text/css" href="stylesheets/reset.css" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+  </head>
+  <body>
+    <div class="header">
+      <ul class="nav">
+        <% tabs.each do |tab| %>
+          <li class="<%= request.path_info == tab[:path] ? 'current' : '' %>">
+            <a class="tab" href="<%= u(tab[:path]) %>">
+              <%= tab[:name] %>
+            </a>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <div id="main">
+      <%= yield %>
+    </div>
+    <div id="footer">
+      <p>
+        Powered by
+        <a href="https://github.com/collectiveidea/delayed_job">delayed_job</a>
+        &
+        <a href="https://github.com/ejschmitt/delayed_job_web">delayed_job_web</a>
+      </p>
+    </div>
+    <script src="<%= u("javascripts/jquery-1.7.1.min.js") %>" type="text/javascript"></script>
+    <script src="<%= u("javascripts/jquery.relatize_date.js") %>" type="text/javascript"></script>
+    <script src="<%= u("javascripts/application.js") %>" type="text/javascript"></script>
+  </body>
+</html>

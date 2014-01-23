@@ -1,0 +1,36 @@
+<h1>Stats</h1>
+<table class="stats">
+  <tr>
+    <th class="status">
+      environment
+    </th>
+    <th>
+      <%= Sinatra::Application.environment.to_s %>
+    </th>
+  </tr>
+  <tr>
+    <th class="status">
+      failed
+    </th>
+    <th>
+      <%= delayed_jobs(:failed).count %>
+    </th>
+  </tr>
+  <tr>
+    <th class="status">
+      pending
+    </th>
+    <th>
+      <%= delayed_jobs(:pending).count %>
+    </th>
+  </tr>
+  <tr>
+    <th class="status">
+      working
+    </th>
+    <th>
+      <%= delayed_jobs(:working).count %>
+    </th>
+  </tr>
+</table>
+<%= poll %>

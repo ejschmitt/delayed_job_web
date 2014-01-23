@@ -2,14 +2,12 @@ require 'sinatra/base'
 require 'active_support'
 require 'active_record'
 require 'delayed_job'
-require 'haml'
 
 class DelayedJobWeb < Sinatra::Base
   set :root, File.dirname(__FILE__)
   set :static, true
   set :public_folder,  File.expand_path('../public', __FILE__)
   set :views,  File.expand_path('../views', __FILE__)
-  set :haml, { :format => :html5 }
 
   def current_page
     url_path request.path_info.sub('/','')
@@ -26,7 +24,7 @@ class DelayedJobWeb < Sinatra::Base
   def url_path(*path_parts)
     [ path_prefix, path_parts ].join("/").squeeze('/')
   end
-  alias_method :u, :url_path
+ alias_method :u, :url_path
 
   def path_prefix
     request.env['SCRIPT_NAME']
@@ -53,22 +51,22 @@ class DelayedJobWeb < Sinatra::Base
 
   get '/overview' do
     if delayed_job
-      haml :overview
+      erb :overview
     else
       @message = "Unable to connected to Delayed::Job database"
-      haml :error
+      erb :error
     end
   end
 
   get '/stats' do
-    haml :stats
+    erb :stats
   end
 
   %w(enqueued working pending failed).each do |page|
     get "/#{page}" do
       @jobs = delayed_jobs(page.to_sym).order('created_at desc, id desc').offset(start).limit(per_page)
       @all_jobs = delayed_jobs(page.to_sym)
-      haml page.to_sym
+      erb page.to_sym
     end
   end
 
@@ -122,7 +120,7 @@ class DelayedJobWeb < Sinatra::Base
 
   def partial(template, local_vars = {})
     @partial = true
-    haml(template.to_sym, {:layout => false}, local_vars)
+    erb(template.to_sym, {:layout => false}, local_vars)
   ensure
     @partial = false
   end
@@ -151,7 +149,7 @@ class DelayedJobWeb < Sinatra::Base
     @polling = true
     # show(page.to_sym, false).gsub(/\s{1,}/, ' ')
     @jobs = delayed_jobs(page.to_sym)
-    haml(page.to_sym, {:layout => false})
+    erb(page.to_sym, {:layout => false})
   end
 
 end
