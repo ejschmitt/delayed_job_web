@@ -46,6 +46,29 @@ end
 
 `delayed_job_web` runs as a Sinatra application within the rails application. Visit it at `/delayed_job_web`.
 
+## Serving static assets
+
+If you mount the app on another route, you may encounter the CSS not working anymore. To work around this you can leverage a special HTTP header. Install it, activate it and configure it -- see below.
+
+### Apache
+
+    XSendFile On 
+    XSendFilePath /path/to/shared/bundle
+
+[`XSendFilePath`](https://tn123.org/mod_xsendfile/) white-lists a directory from which static files are allowed to be served. This should be at least the path to where delayed_job_web is installed.
+
+Using Rails you'll have to set `config.action_dispatch.x_sendfile_header = "X-Sendfile"`.
+
+### Nginx
+
+Nginx uses an equivalent that's called `X-Accel-Redirect`, further instructions can be found [in their wiki](http://wiki.nginx.org/XSendfile).
+
+Rails' will need to be configured to `config.action_dispatch.x_sendfile_header = "X-Accel-Redirect"`.
+
+### Lighttpd
+
+Lighty is more `X-Sendfile`, like [outlined](http://redmine.lighttpd.net/projects/1/wiki/X-LIGHTTPD-send-file) in their wiki.
+
 The Interface - Yea, a ripoff of resque-web
 ------------------------------------
 
