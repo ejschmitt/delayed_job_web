@@ -11,6 +11,7 @@ Some features:
 * Queue any single job. or all pending jobs, to run immediately.
 * Remove a failed job, or easily remove all failed jobs.
 * Watch delayed_job operation with live ajax polling.
+* Filter delayed_jobs by queue name
 
 Quick Start For Rails 3 and 4 Applications
 ------------------------------------
