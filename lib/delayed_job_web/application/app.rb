@@ -8,6 +8,10 @@ class DelayedJobWeb < Sinatra::Base
   set :static, true
   set :public_folder,  File.expand_path('../public', __FILE__)
   set :views,  File.expand_path('../views', __FILE__)
+  
+  before do
+    @queues = (params[:queues] || "").split(",").map{|queue| queue.strip}.uniq.compact
+  end
 
   def current_page
     url_path request.path_info.sub('/','')
@@ -20,9 +24,11 @@ class DelayedJobWeb < Sinatra::Base
   def per_page
     20
   end
-
+  
   def url_path(*path_parts)
-    [ path_prefix, path_parts ].join("/").squeeze('/')
+    url = [ path_prefix, path_parts ].join("/").squeeze('/')
+    url += "?queues=#{@queues.join(",")}" unless @queues.empty?
+    url
   end
  alias_method :u, :url_path
 
@@ -64,8 +70,8 @@ class DelayedJobWeb < Sinatra::Base
 
   %w(enqueued working pending failed).each do |page|
     get "/#{page}" do
-      @jobs = delayed_jobs(page.to_sym).order('created_at desc, id desc').offset(start).limit(per_page)
-      @all_jobs = delayed_jobs(page.to_sym)
+      @jobs     = delayed_jobs(page.to_sym, @queues).order('created_at desc, id desc').offset(start).limit(per_page)
+      @all_jobs = delayed_jobs(page.to_sym, @queues)
       erb page.to_sym
     end
   end
@@ -88,23 +94,23 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   post "/failed/clear" do
-    delayed_job.destroy_all(delayed_job_sql(:failed))
+    delayed_job.destroy_all(delayed_job_sql(:failed, @queues))
     redirect u('failed')
   end
 
   post "/requeue/all" do
-    delayed_jobs(:failed).update_all(:run_at => Time.now, :failed_at => nil)
+    delayed_jobs(:failed, @queues).update_all(:run_at => Time.now, :failed_at => nil)
     redirect back
   end
 
-  def delayed_jobs(type)
-    delayed_job.where(delayed_job_sql(type))
+  def delayed_jobs(type, queues = [])
+    delayed_job.where(delayed_job_sql(type, queues))
   end
 
-  def delayed_job_sql(type)
-    case type
-    when :enqueued
-      ''
+  def delayed_job_sql(type, queues = [])
+    conditions = []
+    
+    conditions << case type
     when :working
       'locked_at is not null'
     when :failed
@@ -112,6 +118,10 @@ class DelayedJobWeb < Sinatra::Base
     when :pending
       'attempts = 0'
     end
+    
+    conditions << "queue IN ('#{queues.join("','")}')" unless queues.empty?
+    
+    conditions.compact.join(" AND ")
   end
 
   get "/?" do
@@ -139,7 +149,7 @@ class DelayedJobWeb < Sinatra::Base
     if @polling
       text = "Last Updated: #{Time.now.strftime("%H:%M:%S")}"
     else
-      text = "<a href='#{u(request.path_info)}.poll' rel='poll'>Live Poll</a>"
+      text = "<a href='#{u(request.path_info + ".poll")}' rel='poll'>Live Poll</a>"
     end
     "<p class='poll'>#{text}</p>"
   end
@@ -148,7 +158,7 @@ class DelayedJobWeb < Sinatra::Base
     content_type "text/html"
     @polling = true
     # show(page.to_sym, false).gsub(/\s{1,}/, ' ')
-    @jobs = delayed_jobs(page.to_sym)
+    @jobs = delayed_jobs(page.to_sym, @queues)
     erb(page.to_sym, {:layout => false})
   end
 
