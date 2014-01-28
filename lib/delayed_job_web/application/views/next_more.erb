@@ -1,10 +1,11 @@
 <% if start - per_page >= 0 || start + per_page <= total_size %>
+<% divider = @queues.empty? ? "?" : "&" %>
   <p class="pagination">
     <% if start - per_page >= 0 %>
-      <a class="less" href="<%= current_page %>?start=<%= start - per_page %>">&laquo; less</a>
+      <a class="less" href="<%= current_page %><%= divider %>start=<%= start - per_page %>">&laquo; less</a>
     <% end %>
     <% if start + per_page < total_size %>
-      <a class="more" href="<%= current_page %>?start=<%= start + per_page %>">more &raquo;</a>
+      <a class="more" href="<%= current_page %><%= divider %>start=<%= start + per_page %>">more &raquo;</a>
     <% end %>
   </p>
 <% end %>
