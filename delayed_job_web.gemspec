@@ -4,7 +4,6 @@ Gem::Specification.new do |s|
   s.name = "delayed_job_web"
   s.version = "1.2.4"
 
-  s.required_rubygems_version = "2.0.14"
   s.authors = ["Erick Schmitt"]
   s.date = "2014-01-29"
   s.description = "Web interface for delayed_job inspired by resque"
