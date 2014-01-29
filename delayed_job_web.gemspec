@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "delayed_job_web"
-  s.version = "1.2.4"
+  s.version = "1.2.5"
 
   s.authors = ["Erick Schmitt"]
   s.date = "2014-01-29"
