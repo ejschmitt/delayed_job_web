@@ -11,20 +11,6 @@ rescue Bundler::BundlerError => e
 end
 require 'rake'
 
-require 'jeweler'
-Jeweler::Tasks.new do |gem|
-  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "delayed_job_web"
-  gem.homepage = "http://github.com/ejschmitt/delayed_job_web"
-  gem.license = "MIT"
-  gem.summary = "Web interface for delayed_job"
-  gem.description = "Web interface for delayed_job inspired by resque"
-  gem.email = "ejschmitt@gmail.com"
-  gem.authors = ["Erick Schmitt"]
-  # dependencies defined in Gemfile
-end
-Jeweler::RubygemsDotOrgTasks.new
-
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
