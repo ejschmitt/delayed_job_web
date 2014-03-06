@@ -5,11 +5,11 @@
       <a name="<%= job.id %>"></a>
       <a href="#<%= job.id %>"><%= job.id %></a>
       <div class="controls">
-        <a href="<%= u("requeue/#{job.id}") %>" rel="retry">Retry</a>
+        <form action="<%= u("requeue/#{job.id}") %>" method="post"><input type="submit" value="Retry"></input></form>
         or
-        <a href="<%= u("remove/#{job.id}") %>" rel="remove">Remove</a>
+        <form action="<%= u("remove/#{job.id}") %>" method="post"><input type="submit" value="Remove"></input></form>
         or
-        <a href="<%= u("reload/#{job.id}") %>" rel="reload_job">Reload Job</a>
+        <form action="<%= u("reload/#{job.id}") %>" method="post"><input type="submit" value="Reload"></input></form>
       </div>
     </dd>
     <dt>Priority</dt>

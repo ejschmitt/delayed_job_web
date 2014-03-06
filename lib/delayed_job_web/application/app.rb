@@ -76,18 +76,18 @@ class DelayedJobWeb < Sinatra::Base
     end
   end
 
-  get "/remove/:id" do
+  post "/remove/:id" do
     delayed_job.find(params[:id]).delete
     redirect back
   end
 
-  get "/requeue/:id" do
+  post "/requeue/:id" do
     job = delayed_job.find(params[:id])
     job.update_attributes(:run_at => Time.now, :failed_at => nil)
     redirect back
   end
 
-  get "/reload/:id" do
+  post "/reload/:id" do
     job = delayed_job.find(params[:id])
     job.update_attributes(:run_at => Time.now, :failed_at => nil, :locked_by => nil, :locked_at => nil, :last_error => nil, :attempts => 0)
     redirect back
