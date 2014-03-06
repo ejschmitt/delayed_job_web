@@ -13,7 +13,7 @@ class DelayedJobWeb < Sinatra::Base
 
   set :protection, :session => true,
                    :reaction => :deny,
-                   :use => [ :authenticity_token ]
+                   :use => [ :authenticity_token, :remote_referrer ]
 
   before do
     @queues = (params[:queues] || "").split(",").map{|queue| queue.strip}.uniq.compact
