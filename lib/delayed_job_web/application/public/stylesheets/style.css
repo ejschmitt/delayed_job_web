@@ -75,6 +75,7 @@ pre { font-family:Courier New; line-height:1.4em; }
 #main ul.job li dl dd .retried .remove { display:none; margin-top: 8px; }
 #main ul.job li.hover dl dd .retried .remove { display:block; }
 #main ul.job li dl dd .controls { display:none; float:right; }
+#main ul.job li dl dd .controls form { display: inline; }
 #main ul.job li.hover dl dd .controls { display:block; }
 #main ul.job li dl dd code, #main ul.failed li dl dd pre { font-family:Monaco, "Courier New", monospace; font-size:90%; white-space: pre-wrap;}
 #main ul.job li dl dd.error a {font-family:Monaco, "Courier New", monospace; font-size:90%; }
@@ -84,6 +85,6 @@ pre { font-family:Courier New; line-height:1.4em; }
 #main p.pagination a.less { float:left;}
 #main p.pagination a.more { float:right;}
 
-#main form {float:right; margin-top:-10px;margin-left:10px;}
+#main .header-queues {float:right; margin-top:-10px;margin-left:10px;}
 
 #main .time a.toggle_format {text-decoration:none;}
