@@ -8,9 +8,21 @@ class DelayedJobWeb < Sinatra::Base
   set :static, true
   set :public_folder,  File.expand_path('../public', __FILE__)
   set :views,  File.expand_path('../views', __FILE__)
-  
+
+  enable :sessions
+
+  set :protection, :session => true,
+                   :reaction => :deny,
+                   :use => [ :authenticity_token, :remote_referrer ]
+
   before do
     @queues = (params[:queues] || "").split(",").map{|queue| queue.strip}.uniq.compact
+  end
+
+  helpers do
+    def csrf_token
+      session[:csrf]
+    end
   end
 
   def current_page
@@ -24,13 +36,14 @@ class DelayedJobWeb < Sinatra::Base
   def per_page
     20
   end
-  
+
   def url_path(*path_parts)
     url = [ path_prefix, path_parts ].join("/").squeeze('/')
     url += "?queues=#{@queues.join(",")}" unless @queues.empty?
     url
   end
- alias_method :u, :url_path
+
+  alias_method :u, :url_path
 
   def path_prefix
     request.env['SCRIPT_NAME']
@@ -76,25 +89,25 @@ class DelayedJobWeb < Sinatra::Base
     end
   end
 
-  get "/remove/:id" do
+  post "/remove/:id" do
     delayed_job.find(params[:id]).delete
     redirect back
   end
 
-  get "/requeue/:id" do
+  post "/requeue/:id" do
     job = delayed_job.find(params[:id])
     job.update_attributes(:run_at => Time.now, :failed_at => nil)
     redirect back
   end
 
-  get "/reload/:id" do
+  post "/reload/:id" do
     job = delayed_job.find(params[:id])
     job.update_attributes(:run_at => Time.now, :failed_at => nil, :locked_by => nil, :locked_at => nil, :last_error => nil, :attempts => 0)
     redirect back
   end
 
   post "/failed/clear" do
-    delayed_job.destroy_all(delayed_job_sql(:failed, @queues))
+    delayed_jobs(:failed, @queues).delete_all
     redirect u('failed')
   end
 
@@ -104,24 +117,23 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   def delayed_jobs(type, queues = [])
-    delayed_job.where(delayed_job_sql(type, queues))
-  end
+    rel = delayed_job
 
-  def delayed_job_sql(type, queues = [])
-    conditions = []
-    
-    conditions << case type
-    when :working
-      'locked_at is not null'
-    when :failed
-      'last_error is not null'
-    when :pending
-      'attempts = 0'
-    end
-    
-    conditions << "queue IN ('#{queues.join("','")}')" unless queues.empty?
-    
-    conditions.compact.join(" AND ")
+    rel =
+      case type
+      when :working
+        rel.where('locked_at IS NOT NULL')
+      when :failed
+        rel.where('last_error IS NOT NULL')
+      when :pending
+        rel.where(:attempts => 0)
+      else
+        rel
+      end
+
+    rel = rel.where(:queue => queues) unless queues.empty?
+
+    rel
   end
 
   get "/?" do

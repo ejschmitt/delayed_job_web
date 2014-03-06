@@ -16,7 +16,7 @@
           </li>
         <% end %>
         <li>
-          <form method="get" action="" style="display:inline; width: 100%;">
+          <form method="get" class="header-queues" action="" style="display:inline; width: 100%;">
             <input name="queues" type="text" value="<%= @queues.join(", ") %>" style="width: 300px;" placeholder="Filter jobs by queue name (e.g. queue1, queue2)" />
             <input type="submit" value="Filter" />
           </form>
