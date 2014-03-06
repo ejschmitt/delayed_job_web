@@ -9,8 +9,20 @@ class DelayedJobWeb < Sinatra::Base
   set :public_folder,  File.expand_path('../public', __FILE__)
   set :views,  File.expand_path('../views', __FILE__)
 
+  enable :sessions
+
+  set :protection, :session => true,
+                   :reaction => :deny,
+                   :use => [ :authenticity_token ]
+
   before do
     @queues = (params[:queues] || "").split(",").map{|queue| queue.strip}.uniq.compact
+  end
+
+  helpers do
+    def csrf_token
+      session[:csrf]
+    end
   end
 
   def current_page
@@ -30,7 +42,8 @@ class DelayedJobWeb < Sinatra::Base
     url += "?queues=#{@queues.join(",")}" unless @queues.empty?
     url
   end
- alias_method :u, :url_path
+
+  alias_method :u, :url_path
 
   def path_prefix
     request.env['SCRIPT_NAME']
