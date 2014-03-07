@@ -30,7 +30,12 @@ class DelayedJobWeb < Sinatra::Base
     url += "?queues=#{@queues.join(",")}" unless @queues.empty?
     url
   end
- alias_method :u, :url_path
+
+  alias_method :u, :url_path
+
+  def h(text)
+    Rack::Utils.escape_html(text)
+  end
 
   def path_prefix
     request.env['SCRIPT_NAME']
