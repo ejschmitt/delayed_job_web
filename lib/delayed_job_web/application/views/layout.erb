@@ -11,13 +11,13 @@
         <% tabs.each do |tab| %>
           <li class="<%= request.path_info == tab[:path] ? 'current' : '' %>">
             <a class="tab" href="<%= u(tab[:path]) %>">
-              <%= tab[:name] %>
+              <%=h tab[:name] %>
             </a>
           </li>
         <% end %>
         <li>
           <form method="get" class="header-queues" action="" style="display:inline; width: 100%;">
-            <input name="queues" type="text" value="<%= @queues.join(", ") %>" style="width: 300px;" placeholder="Filter jobs by queue name (e.g. queue1, queue2)" />
+            <input name="queues" type="text" value="<%=h @queues.join(", ") %>" style="width: 300px;" placeholder="Filter jobs by queue name (e.g. queue1, queue2)" />
             <input type="submit" value="Filter" />
           </form>
         </li>
@@ -30,7 +30,7 @@
       <p>
         Powered by
         <a href="https://github.com/collectiveidea/delayed_job">delayed_job</a>
-        &
+        &amp;
         <a href="https://github.com/ejschmitt/delayed_job_web">delayed_job_web</a>
       </p>
     </div>
