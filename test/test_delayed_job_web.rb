@@ -26,6 +26,10 @@ class Delayed::Job
   def self.count(*args)
     0
   end
+
+  def self.order(*args)
+    DelayedJobFake.new
+  end
 end
 
 class TestDelayedJobWeb < Test::Unit::TestCase
