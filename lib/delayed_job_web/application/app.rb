@@ -6,8 +6,26 @@ require 'delayed_job'
 class DelayedJobWeb < Sinatra::Base
   set :root, File.dirname(__FILE__)
   set :static, true
-  set :public_folder,  File.expand_path('../public', __FILE__)
-  set :views,  File.expand_path('../views', __FILE__)
+  set :public_folder, File.expand_path('../public', __FILE__)
+  set :views, File.expand_path('../views', __FILE__)
+
+  # Enable sessions so we can use CSRF protection
+  set :sessions,
+    # Unique cookie key that won't clash with Rails etc
+    :key => "rack.delayed-job-web-session"
+
+  set :protection,
+    # Various session protections
+    :session => true,
+    # Various non-default Rack::Protection options
+    :use => [
+      # Prevent destructive actions without a valid CSRF auth token
+      :authenticity_token,
+      # Prevent destructive actions with remote referrers
+      :remote_referrer
+    ],
+    # Deny the request, don't clear the session
+    :reaction => :deny
 
   before do
     @queues = (params[:queues] || "").split(",").map{|queue| queue.strip}.uniq.compact
@@ -58,6 +76,15 @@ class DelayedJobWeb < Sinatra::Base
     rescue
       false
     end
+  end
+
+  def csrf_token
+    # Set up by Rack::Protection
+    session[:csrf]
+  end
+
+  def csrf_token_tag
+    "<input type='hidden' name='authenticity_token' value='#{h csrf_token}'>"
   end
 
   get '/overview' do
