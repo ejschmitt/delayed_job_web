@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "delayed_job_web"
-  s.version = "1.2.5"
+  s.version = "1.2.6"
 
   s.authors = ["Erick Schmitt"]
   s.date = "2014-01-29"
@@ -53,4 +53,3 @@ Gem::Specification.new do |s|
   s.add_development_dependency(%q<shoulda>, [">= 0"])
   s.add_development_dependency(%q<rack-test>, [">= 0"])
 end
-
