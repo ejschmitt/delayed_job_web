@@ -1,4 +1,7 @@
+require 'bundler'
 require 'rake/testtask'
+require 'rdoc/task'
+
 Rake::TestTask.new do |test|
   test.libs << 'lib' << 'test'
   test.pattern = 'test/**/test_*.rb'
@@ -7,7 +10,6 @@ end
 
 task :default => :test
 
-require 'rdoc/task'
 Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
@@ -16,3 +18,5 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
+
+Bundler::GemHelper.install_tasks
