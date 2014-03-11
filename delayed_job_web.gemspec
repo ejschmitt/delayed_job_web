@@ -1,6 +1,6 @@
 Gem::Specification.new do |gem|
   gem.name        = "delayed_job_web"
-  gem.version     = "1.2.6"
+  gem.version     = "1.2.7"
   gem.author      = "Erick Schmitt"
   gem.email       = "ejschmitt@gmail.com"
   gem.homepage    = "https://github.com/ejschmitt/delayed_job_web"
