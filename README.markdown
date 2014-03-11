@@ -13,6 +13,11 @@ Some features:
 * Watch delayed_job operation with live ajax polling.
 * Filter delayed_jobs by queue name
 
+The interface (yea, a ripoff of resque-web):
+
+![Screen shot](http://dl.dropbox.com/u/1506097/Screenshots/delayed_job_web_1.png)
+
+
 Quick Start For Rails 3 and 4 Applications
 ------------------------------------
 
@@ -53,7 +58,7 @@ If you mount the app on another route, you may encounter the CSS not working any
 
 ### Apache
 
-    XSendFile On 
+    XSendFile On
     XSendFilePath /path/to/shared/bundle
 
 [`XSendFilePath`](https://tn123.org/mod_xsendfile/) white-lists a directory from which static files are allowed to be served. This should be at least the path to where delayed_job_web is installed.
@@ -70,10 +75,28 @@ Rails' will need to be configured to `config.action_dispatch.x_sendfile_header =
 
 Lighty is more `X-Sendfile`, like [outlined](http://redmine.lighttpd.net/projects/1/wiki/X-LIGHTTPD-send-file) in their wiki.
 
-The Interface - Yea, a ripoff of resque-web
-------------------------------------
 
-![Screen shot](http://dl.dropbox.com/u/1506097/Screenshots/delayed_job_web_1.png)
+Contributing
+------------
+
+1. Fork
+2. Hack
+3. `rake test`
+4. Send a pull request
+
+
+Releasing a new version
+-----------------------
+
+1. Update the version in `delayed_job_web.gemspec`
+2. `git commit delayed_job_web.gemspec` with the following message format:
+
+        Version x.x.x
+
+        Changelog:
+        * Some new feature
+        * Some new bug fix
+3. `rake release`
 
 
 Author
