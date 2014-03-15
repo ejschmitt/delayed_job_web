@@ -82,7 +82,11 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   def csrf_token_tag
-    "<input type='hidden' name='authenticity_token' value='#{h csrf_token}'>"
+    # If csrf_token is nil, and we submit a blank string authenticity_token
+    # param, Rack::Protection will fail.
+    if csrf_token
+      "<input type='hidden' name='authenticity_token' value='#{h csrf_token}'>"
+    end
   end
 
   get '/overview' do
