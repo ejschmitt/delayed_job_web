@@ -10,9 +10,7 @@ class DelayedJobWeb < Sinatra::Base
   set :views, File.expand_path('../views', __FILE__)
 
   # Enable sessions so we can use CSRF protection
-  set :sessions,
-    # Unique cookie key that won't clash with Rails etc
-    :key => "rack.delayed-job-web-session"
+  enable :sessions
 
   set :protection,
     # Various session protections
