@@ -145,7 +145,7 @@ class DelayedJobWeb < Sinatra::Base
       when :failed
         rel.where('last_error IS NOT NULL')
       when :pending
-        rel.where(:attempts => 0)
+        rel.where(:attempts => 0, :locked_at => nil)
       else
         rel
       end
