@@ -115,6 +115,11 @@ class DelayedJobWeb < Sinatra::Base
     redirect back
   end
 
+  post "/requeue/all" do
+    delayed_jobs(:failed, @queues).update_all(:run_at => Time.now, :failed_at => nil)
+    redirect back
+  end
+
   post "/requeue/:id" do
     job = delayed_job.find(params[:id])
     job.update_attributes(:run_at => Time.now, :failed_at => nil)
@@ -130,11 +135,6 @@ class DelayedJobWeb < Sinatra::Base
   post "/failed/clear" do
     delayed_jobs(:failed, @queues).delete_all
     redirect u('failed')
-  end
-
-  post "/requeue/all" do
-    delayed_jobs(:failed, @queues).update_all(:run_at => Time.now, :failed_at => nil)
-    redirect back
   end
 
   def delayed_jobs(type, queues = [])

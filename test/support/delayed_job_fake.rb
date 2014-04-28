@@ -27,4 +27,8 @@ class Delayed::Job
   def self.order(*args)
     DelayedJobFake.new
   end
+
+  def self.find(*args)
+    DelayedJobFake.new
+  end
 end
