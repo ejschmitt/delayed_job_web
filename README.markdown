@@ -50,7 +50,7 @@ if Rails.env.production?
 end
 ```
 
-`delayed_job_web` runs as a Sinatra application within the rails application. Visit it at `/delayed_job_web`.
+`delayed_job_web` runs as a Sinatra application within the rails application. Visit it at `/delayed_job`.
 
 ## Serving static assets
 
