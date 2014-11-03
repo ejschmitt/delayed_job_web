@@ -29,6 +29,27 @@ class DelayedJobWeb < Sinatra::Base
     @queues = (params[:queues] || "").split(",").map{|queue| queue.strip}.uniq.compact
   end
 
+  def heroku_token
+    ENV['DJWEB_HEROKU_TOKEN']
+  end
+
+  def heroku_app_name
+    ENV['DJWEB_HEROKU_APP_NAME']
+  end
+  
+  def monitor_zombies
+    !!(heroku_token && heroku_app_name)
+  end
+
+  def heroku
+    PlatformAPI.connect_oauth(heroku_token)
+  end
+
+  def heroku_dynos(refresh = false)
+    @@dynos = nil if refresh
+    @@dynos ||= heroku.dyno.list(heroku_app_name)
+  end
+
   def current_page
     url_path request.path_info.sub('/','')
   end
@@ -58,7 +79,7 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   def tabs
-    [
+    t = [
       {:name => 'Overview', :path => '/overview'},
       {:name => 'Enqueued', :path => '/enqueued'},
       {:name => 'Working', :path => '/working'},
@@ -66,6 +87,8 @@ class DelayedJobWeb < Sinatra::Base
       {:name => 'Failed', :path => '/failed'},
       {:name => 'Stats', :path => '/stats'}
     ]
+    t.insert(3, {:name => 'Heroku Zombies', :path => '/zombies'}) if monitor_zombies
+    t
   end
 
   def delayed_job
@@ -102,7 +125,7 @@ class DelayedJobWeb < Sinatra::Base
     erb :stats
   end
 
-  %w(enqueued working pending failed).each do |page|
+  %w(enqueued working zombies pending failed).each do |page|
     get "/#{page}" do
       @jobs     = delayed_jobs(page.to_sym, @queues).order('created_at desc, id desc').offset(start).limit(per_page)
       @all_jobs = delayed_jobs(page.to_sym, @queues)
@@ -137,6 +160,11 @@ class DelayedJobWeb < Sinatra::Base
     redirect u('failed')
   end
 
+  post "/refresh_heroku_dynos" do
+    heroku_dynos(true)
+    redirect back
+  end
+
   def delayed_jobs(type, queues = [])
     rel = delayed_job
 
@@ -144,6 +172,12 @@ class DelayedJobWeb < Sinatra::Base
       case type
       when :working
         rel.where('locked_at IS NOT NULL')
+      when :zombies
+        predicate = heroku_dynos.select{|dyno| dyno["state"] == "up"}
+          .map{|dyno| "locked_by not like '%host:#{dyno['id']}%'"}
+          .join(" and ")
+        puts predicate
+        rel.where("locked_at IS NOT NULL and #{predicate}")
       when :failed
         rel.where('last_error IS NOT NULL')
       when :pending
@@ -168,7 +202,7 @@ class DelayedJobWeb < Sinatra::Base
     @partial = false
   end
 
-  %w(overview enqueued working pending failed stats) .each do |page|
+  %w(overview enqueued working zombies pending failed stats) .each do |page|
     get "/#{page}.poll" do
       show_for_polling(page)
     end

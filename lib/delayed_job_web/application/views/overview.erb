@@ -25,6 +25,16 @@
       <%= delayed_jobs(:working, @queues).count %>
     </td>
   </tr>
+  <% if monitor_zombies %>
+  <tr>
+    <td class="status">
+      <a href="<%= u('/zombies') %>">Heroku Zombie Jobs</a>
+    </td>
+    <td>
+      <%= delayed_jobs(:zombies, @queues).count %>
+    </td>
+  </tr>
+  <% end %>
   <tr>
     <td class="status">
       <a href="<%= u('/pending') %>">Pending Jobs</a>
@@ -42,4 +52,9 @@
     </td>
   </tr>
 </table>
+
+<% if monitor_zombies %>
+<%= partial :dynos %>
+<% end %>
+
 <%= poll %>

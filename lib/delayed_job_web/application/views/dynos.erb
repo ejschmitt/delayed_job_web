@@ -1,0 +1,39 @@
+<h1>Heroku dynos</h1>
+<form action="<%= u('/refresh_heroku_dynos') %>" method="POST">
+  <%= csrf_token_tag %>
+  <input type="submit" value="Refresh"></input>
+</form>
+<table class="stats">
+  <tr>
+    <th class="status">
+      name
+    </th>
+    <th>
+      id
+    </th>
+    <th>
+      state
+    </th>
+    <th>
+      age (hours)
+    </th>
+  </tr>
+
+  <% heroku_dynos.each do |dyno| %>
+  <tr>
+    <td>
+      <%= dyno["name"] %>
+    </td>
+    <td>
+      <%= dyno["id"] %>
+    </td>
+    <td>
+      <%= dyno["state"] %>
+    </td>
+    <td>
+      <%= ((Time.now - DateTime.iso8601(dyno["created_at"]))/60/60).round(1) %>
+    </td>
+  </tr>
+  <% end %>
+
+</table>
