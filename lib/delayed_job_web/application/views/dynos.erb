@@ -3,10 +3,16 @@
   <%= csrf_token_tag %>
   <input type="submit" value="Refresh"></input>
 </form>
-<table class="stats">
+<table>
   <tr>
-    <th class="status">
+    <th>
       name
+    </th>
+    <th>
+      jobs
+    </th>
+    <th>
+      age&nbsp;(hours)
     </th>
     <th>
       id
@@ -14,24 +20,26 @@
     <th>
       state
     </th>
-    <th>
-      age (hours)
-    </th>
   </tr>
 
-  <% heroku_dynos.each do |dyno| %>
+  <% heroku_dynos.select{|dyno| dyno["type"] != "web"}.each do |dyno| %>
   <tr>
     <td>
       <%= dyno["name"] %>
+    </td>
+    <td>
+      <a href='<%= u("/working?dyno_name=#{dyno['name']}&dyno_id=#{dyno['id']}") %>'>
+        <%= delayed_jobs(:working).locked_by_like(dyno["id"]).count %>
+      </a>
+    </td>
+    <td>
+      <%= ((Time.now - DateTime.iso8601(dyno["created_at"]))/60/60).round(1) %>
     </td>
     <td>
       <%= dyno["id"] %>
     </td>
     <td>
       <%= dyno["state"] %>
-    </td>
-    <td>
-      <%= ((Time.now - DateTime.iso8601(dyno["created_at"]))/60/60).round(1) %>
     </td>
   </tr>
   <% end %>

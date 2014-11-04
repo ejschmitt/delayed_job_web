@@ -3,6 +3,13 @@ require 'active_support'
 require 'active_record'
 require 'delayed_job'
 
+module Delayed
+  class Job
+    scope :locked_by_like, ->(id) { where("locked_by like ?", "%#{id}%") }
+    scope :not_locked_by_like, ->(ids) { where(ids.map{|id| "locked_by not like '%#{id}%'"}.join(" and ")) }
+  end
+end
+
 class DelayedJobWeb < Sinatra::Base
   set :root, File.dirname(__FILE__)
   set :static, true
@@ -128,7 +135,10 @@ class DelayedJobWeb < Sinatra::Base
   %w(enqueued working zombies pending failed).each do |page|
     get "/#{page}" do
       @jobs     = delayed_jobs(page.to_sym, @queues).order('created_at desc, id desc').offset(start).limit(per_page)
+      @jobs     = @jobs.locked_by_like(params[:dyno_id]) if params[:dyno_id].present?
       @all_jobs = delayed_jobs(page.to_sym, @queues)
+      @all_jobs = @all_jobs.locked_by_like(params[:dyno_id]) if params[:dyno_id].present?
+      @dyno_name= params[:dyno_name] 
       erb page.to_sym
     end
   end
@@ -173,11 +183,7 @@ class DelayedJobWeb < Sinatra::Base
       when :working
         rel.where('locked_at IS NOT NULL')
       when :zombies
-        predicate = heroku_dynos.select{|dyno| dyno["state"] == "up"}
-          .map{|dyno| "locked_by not like '%host:#{dyno['id']}%'"}
-          .join(" and ")
-        puts predicate
-        rel.where("locked_at IS NOT NULL and #{predicate}")
+        rel.where("locked_at IS NOT NULL").not_locked_by_like(heroku_dynos.select{|dyno| dyno["state"] == "up"}.map{|dyno| dyno['id']})
       when :failed
         rel.where('last_error IS NOT NULL')
       when :pending
