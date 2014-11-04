@@ -32,5 +32,15 @@
       <%= delayed_jobs(:working, @queues).count %>
     </th>
   </tr>
+  <% if monitor_zombies %>
+  <tr>
+    <th class="status">
+      heroku zombies
+    </th>
+    <th>
+      <%= delayed_jobs(:zombies, @queues).count %>
+    </th>
+  </tr>
+  <% end %>
 </table>
 <%= poll %>
