@@ -25,7 +25,7 @@
       <%= delayed_jobs(:working, @queues).count %>
     </td>
   </tr>
-  <% if monitor_zombies %>
+  <% if HerokuPlatform.monitor_zombies %>
   <tr>
     <td class="status">
       <a href="<%= u('/zombies') %>">Heroku Zombie Jobs</a>
@@ -53,7 +53,7 @@
   </tr>
 </table>
 
-<% if monitor_zombies %>
+<% if HerokuPlatform.monitor_zombies %>
 <%= partial :dynos %>
 <% end %>
 

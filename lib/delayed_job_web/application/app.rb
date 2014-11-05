@@ -3,10 +3,57 @@ require 'active_support'
 require 'active_record'
 require 'delayed_job'
 
+class HerokuPlatform
+  def self.heroku_token
+    ENV['DJWEB_HEROKU_TOKEN']
+  end
+
+  def self.heroku_app_name
+    ENV['DJWEB_HEROKU_APP_NAME']
+  end
+  
+  def self.monitor_zombies
+    !!(heroku_token && heroku_app_name)
+  end
+
+  def self.heroku
+    PlatformAPI.connect_oauth(heroku_token)
+  end
+
+  def self.dynos(refresh = false)
+    @@dynos = nil if refresh
+    @@dynos ||= heroku.dyno.list(heroku_app_name)
+  end  
+end
+
 module Delayed
   class Job
     scope :locked_by_like, ->(id) { where("locked_by like ?", "%#{id}%") }
     scope :not_locked_by_like, ->(ids) { where(ids.map{|id| "locked_by not like '%#{id}%'"}.join(" and ")) }
+  end
+
+  class Worker
+    def initialize(options={})
+      # original code
+      @quiet = options.has_key?(:quiet) ? options[:quiet] : true
+      @failed_reserve_count = 0
+      [:min_priority, :max_priority, :sleep_delay, :read_ahead, :queues, :exit_on_complete].each do |option|
+        self.class.send("#{option}=", options[option]) if options.has_key?(option)
+      end
+      self.plugins.each { |klass| klass.new }      # inject dyno name/id in worker name to be stored in locked_by and we can link back jobs to workers
+
+      # new code
+      dyno_name = ENV['DYNO']
+      if dyno_name && HerokuPlatform.monitor_zombies
+        begin
+          dyno_id = HerokuPlatform.dynos(true).find{|dyno| dyno["name"] == dyno_name}["id"]
+          self.name = "dyno_name:#{dyno_name} dyno_id:#{dyno_id} pid:#{Process.pid}"
+        rescue
+          # couldn't get heroku dyno info, never mind fallback to default name (do nothing here)
+          puts "Error getting dyno id"
+        end
+      end
+    end
   end
 end
 
@@ -34,27 +81,6 @@ class DelayedJobWeb < Sinatra::Base
 
   before do
     @queues = (params[:queues] || "").split(",").map{|queue| queue.strip}.uniq.compact
-  end
-
-  def heroku_token
-    ENV['DJWEB_HEROKU_TOKEN']
-  end
-
-  def heroku_app_name
-    ENV['DJWEB_HEROKU_APP_NAME']
-  end
-  
-  def monitor_zombies
-    !!(heroku_token && heroku_app_name)
-  end
-
-  def heroku
-    PlatformAPI.connect_oauth(heroku_token)
-  end
-
-  def heroku_dynos(refresh = false)
-    @@dynos = nil if refresh
-    @@dynos ||= heroku.dyno.list(heroku_app_name)
   end
 
   def current_page
@@ -94,7 +120,7 @@ class DelayedJobWeb < Sinatra::Base
       {:name => 'Failed', :path => '/failed'},
       {:name => 'Stats', :path => '/stats'}
     ]
-    t.insert(3, {:name => 'Heroku Zombies', :path => '/zombies'}) if monitor_zombies
+    t.insert(3, {:name => 'Heroku Zombies', :path => '/zombies'}) if HerokuPlatform.monitor_zombies
     t
   end
 
@@ -171,7 +197,7 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   post "/refresh_heroku_dynos" do
-    heroku_dynos(true)
+    HerokuPlatform.dynos(true)
     redirect back
   end
 
@@ -183,7 +209,7 @@ class DelayedJobWeb < Sinatra::Base
       when :working
         rel.where('locked_at IS NOT NULL')
       when :zombies
-        rel.where("locked_at IS NOT NULL").not_locked_by_like(heroku_dynos.select{|dyno| dyno["state"] == "up"}.map{|dyno| dyno['id']})
+        rel.where("locked_at IS NOT NULL").not_locked_by_like(HerokuPlatform.dynos.select{|dyno| dyno["state"] == "up"}.map{|dyno| dyno['id']})
       when :failed
         rel.where('last_error IS NOT NULL')
       when :pending

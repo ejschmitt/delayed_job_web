@@ -32,7 +32,7 @@
       <%= delayed_jobs(:working, @queues).count %>
     </th>
   </tr>
-  <% if monitor_zombies %>
+  <% if HerokuPlatform.monitor_zombies %>
   <tr>
     <th class="status">
       heroku zombies

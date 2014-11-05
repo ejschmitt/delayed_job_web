@@ -22,7 +22,7 @@
     </th>
   </tr>
 
-  <% heroku_dynos.select{|dyno| dyno["type"] != "web"}.each do |dyno| %>
+  <% HerokuPlatform.dynos.select{|dyno| dyno["type"] != "web"}.each do |dyno| %>
   <tr>
     <td>
       <%= dyno["name"] %>
