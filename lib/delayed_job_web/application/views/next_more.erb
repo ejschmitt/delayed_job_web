@@ -1,5 +1,5 @@
 <% if start - per_page >= 0 || start + per_page <= total_size %>
-<% divider = @queues.empty? ? "?" : "&" %>
+<% divider = @filters.empty? ? "?" : "&" %>
   <p class="pagination">
     <% if start - per_page >= 0 %>
       <a class="less" href="<%= current_page %><%= divider %>start=<%= start - per_page %>">&laquo; less</a>

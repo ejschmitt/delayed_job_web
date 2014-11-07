@@ -13,7 +13,7 @@
       failed
     </th>
     <th>
-      <%= delayed_jobs(:failed, @queues).count %>
+      <%= delayed_jobs(:failed, @filters).count %>
     </th>
   </tr>
   <tr>
@@ -21,7 +21,7 @@
       pending
     </th>
     <th>
-      <%= delayed_jobs(:pending, @queues).count %>
+      <%= delayed_jobs(:pending, @filters).count %>
     </th>
   </tr>
   <tr>
@@ -29,7 +29,7 @@
       working
     </th>
     <th>
-      <%= delayed_jobs(:working, @queues).count %>
+      <%= delayed_jobs(:working, @filters).count %>
     </th>
   </tr>
 </table>

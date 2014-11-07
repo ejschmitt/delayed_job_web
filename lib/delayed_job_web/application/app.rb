@@ -26,7 +26,7 @@ class DelayedJobWeb < Sinatra::Base
     :reaction => :deny
 
   before do
-    @queues = (params[:queues] || "").split(",").map{|queue| queue.strip}.uniq.compact
+    @filters = (params[:filters] || "").split(",").map{|filter| filter.strip}.uniq.compact
   end
 
   def current_page
@@ -43,7 +43,7 @@ class DelayedJobWeb < Sinatra::Base
 
   def url_path(*path_parts)
     url = [ path_prefix, path_parts ].join("/").squeeze('/')
-    url += "?queues=#{@queues.join(",")}" unless @queues.empty?
+    url += "?filters=#{@filters.join(",")}" unless @filters.empty?
     url
   end
 
@@ -104,8 +104,8 @@ class DelayedJobWeb < Sinatra::Base
 
   %w(enqueued working pending failed).each do |page|
     get "/#{page}" do
-      @jobs     = delayed_jobs(page.to_sym, @queues).order('created_at desc, id desc').offset(start).limit(per_page)
-      @all_jobs = delayed_jobs(page.to_sym, @queues)
+      @jobs     = delayed_jobs(page.to_sym, @filters).order('created_at desc, id desc').offset(start).limit(per_page)
+      @all_jobs = delayed_jobs(page.to_sym, @filters)
       erb page.to_sym
     end
   end
@@ -117,7 +117,7 @@ class DelayedJobWeb < Sinatra::Base
 
   %w(pending failed).each do |page|
     post "/requeue/#{page}" do
-      delayed_jobs(page.to_sym, @queues).update_all(:run_at => Time.now, :failed_at => nil)
+      delayed_jobs(page.to_sym, @filters).update_all(:run_at => Time.now, :failed_at => nil)
       redirect back
     end
   end
@@ -135,11 +135,11 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   post "/failed/clear" do
-    delayed_jobs(:failed, @queues).delete_all
+    delayed_jobs(:failed, @filters).delete_all
     redirect u('failed')
   end
 
-  def delayed_jobs(type, queues = [])
+  def delayed_jobs(type, filters = [])
     rel = delayed_job
 
     rel =
@@ -154,7 +154,13 @@ class DelayedJobWeb < Sinatra::Base
         rel
       end
 
-    rel = rel.where(:queue => queues) unless queues.empty?
+    search = ["handler", "last_error", "queue"].
+      map {|col| "#{col} LIKE :search" }.
+      join(" OR ")
+
+    filters.each do |term|
+      rel = rel.where(search, {search: "%#{term}%"})
+    end
 
     rel
   end
@@ -193,7 +199,7 @@ class DelayedJobWeb < Sinatra::Base
     content_type "text/html"
     @polling = true
     # show(page.to_sym, false).gsub(/\s{1,}/, ' ')
-    @jobs = delayed_jobs(page.to_sym, @queues)
+    @jobs = delayed_jobs(page.to_sym, @filters)
     erb(page.to_sym, {:layout => false})
   end
 

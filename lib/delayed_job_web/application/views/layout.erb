@@ -16,8 +16,8 @@
           </li>
         <% end %>
         <li>
-          <form method="get" class="header-queues" action="" style="display:inline; width: 100%;">
-            <input name="queues" type="text" value="<%=h @queues.join(", ") %>" style="width: 300px;" placeholder="Filter jobs by queue name (e.g. queue1, queue2)" />
+          <form method="get" class="header-filters" action="" style="display:inline; width: 100%;">
+            <input name="filters" type="text" value="<%=h @filters.join(", ") %>" style="width: 300px;" placeholder="Filter jobs by handler, last_error or queue" />
             <input type="submit" value="Filter" />
           </form>
         </li>

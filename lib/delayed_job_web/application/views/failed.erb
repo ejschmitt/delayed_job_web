@@ -2,10 +2,14 @@
 <% if @jobs.any? %>
   <form action="<%= u('failed/clear') %>" method="POST">
     <%= csrf_token_tag %>
+
+    <input name="filters" type="hidden" value="<%=h @filters.join(", ") %>" />
     <input type="submit" value="Clear Failed Jobs"></input>
   </form>
   <form action="<%= u('requeue/failed') %>" method="POST">
     <%= csrf_token_tag %>
+
+    <input name="filters" type="hidden" value="<%=h @filters.join(", ") %>" />
     <input type="submit" value="Retry Failed Jobs"></input>
   </form>
 <% end %>
