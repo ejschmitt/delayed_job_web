@@ -115,9 +115,11 @@ class DelayedJobWeb < Sinatra::Base
     redirect back
   end
 
-  post "/requeue/all" do
-    delayed_jobs(:failed, @queues).update_all(:run_at => Time.now, :failed_at => nil)
-    redirect back
+  %w(pending failed).each do |page|
+    post "/requeue/#{page}" do
+      delayed_jobs(page.to_sym, @queues).update_all(:run_at => Time.now, :failed_at => nil)
+      redirect back
+    end
   end
 
   post "/requeue/:id" do

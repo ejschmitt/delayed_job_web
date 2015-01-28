@@ -4,7 +4,7 @@
     <%= csrf_token_tag %>
     <input type="submit" value="Clear Failed Jobs"></input>
   </form>
-  <form action="<%= u('requeue/all') %>" method="POST">
+  <form action="<%= u('requeue/failed') %>" method="POST">
     <%= csrf_token_tag %>
     <input type="submit" value="Retry Failed Jobs"></input>
   </form>
