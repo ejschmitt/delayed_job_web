@@ -9,6 +9,8 @@ class DelayedJobWeb < Sinatra::Base
   set :public_folder, File.expand_path('../public', __FILE__)
   set :views, File.expand_path('../views', __FILE__)
 
+  set :allow_requeue_pending, true
+
   # Enable sessions so we can use CSRF protection
   enable :sessions
 
@@ -106,6 +108,7 @@ class DelayedJobWeb < Sinatra::Base
     get "/#{page}" do
       @jobs     = delayed_jobs(page.to_sym, @queues).order('created_at desc, id desc').offset(start).limit(per_page)
       @all_jobs = delayed_jobs(page.to_sym, @queues)
+      @allow_requeue_pending = settings.allow_requeue_pending
       erb page.to_sym
     end
   end
@@ -115,11 +118,16 @@ class DelayedJobWeb < Sinatra::Base
     redirect back
   end
 
-  %w(pending failed).each do |page|
-    post "/requeue/#{page}" do
-      delayed_jobs(page.to_sym, @queues).update_all(:run_at => Time.now, :failed_at => nil)
-      redirect back
+  post "/requeue/pending" do
+    if settings.allow_requeue_pending
+      delayed_jobs(:pending, @queues).update_all(:run_at => Time.now, :failed_at => nil)
     end
+    redirect back
+  end
+
+  post "/requeue/failed" do
+    delayed_jobs(:failed, @queues).update_all(:run_at => Time.now, :failed_at => nil)
+    redirect back
   end
 
   post "/requeue/:id" do
