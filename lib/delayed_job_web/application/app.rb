@@ -20,7 +20,7 @@ class HerokuPlatform
     PlatformAPI.connect_oauth(heroku_token)
   end
 
-  def self.dynos(refresh = false)
+  def self.dynos(refresh = true)
     @@dynos = nil if refresh
     @@dynos ||= heroku.dyno.list(heroku_app_name)
   end  
@@ -31,30 +31,25 @@ module Delayed
     scope :locked_by_like, ->(id) { where("locked_by like ?", "%#{id}%") }
     scope :not_locked_by_like, ->(ids) { where(ids.map{|id| "locked_by not like '%#{id}%'"}.join(" and ")) }
   end
+end
 
-  class Worker
-    def initialize(options={})
-      # original code
-      @quiet = options.has_key?(:quiet) ? options[:quiet] : true
-      @failed_reserve_count = 0
-      [:min_priority, :max_priority, :sleep_delay, :read_ahead, :queues, :exit_on_complete].each do |option|
-        self.class.send("#{option}=", options[option]) if options.has_key?(option)
-      end
-      self.plugins.each { |klass| klass.new }      # inject dyno name/id in worker name to be stored in locked_by and we can link back jobs to workers
-
-      # new code
-      dyno_name = ENV['DYNO']
-      if dyno_name && HerokuPlatform.monitor_zombies
-        begin
-          dyno_id = HerokuPlatform.dynos(true).find{|dyno| dyno["name"] == dyno_name}["id"]
-          self.name = "dyno_name:#{dyno_name} dyno_id:#{dyno_id} pid:#{Process.pid}"
-        rescue
-          # couldn't get heroku dyno info, never mind fallback to default name (do nothing here)
-          puts "Error getting dyno id"
-        end
+Delayed::Worker.class_eval do
+  def initialize_with_dyno_name(*args)
+    initialize_without_dyno_name(*args)
+    dyno_name = ENV['DYNO']
+    if dyno_name && HerokuPlatform.monitor_zombies
+      begin
+        dyno_id = HerokuPlatform.dynos(true).find{|dyno| dyno["name"] == dyno_name}["id"]
+        self.name = "dyno_name:#{dyno_name} dyno_id:#{dyno_id} pid:#{Process.pid}"
+      rescue
+        # couldn't get heroku dyno info, never mind fallback to default name (do nothing here)
+        puts "Error getting dyno id"
       end
     end
   end
+
+  alias initialize_without_dyno_name initialize
+  alias initialize initialize_with_dyno_name
 end
 
 class DelayedJobWeb < Sinatra::Base
@@ -174,7 +169,7 @@ class DelayedJobWeb < Sinatra::Base
     redirect back
   end
 
-  %w(pending failed).each do |page|
+  %w(pending failed zombies).each do |page|
     post "/requeue/#{page}" do
       delayed_jobs(page.to_sym, @queues).update_all(:run_at => Time.now, :failed_at => nil)
       redirect back
