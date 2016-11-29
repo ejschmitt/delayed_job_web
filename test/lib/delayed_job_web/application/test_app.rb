@@ -10,7 +10,7 @@ class TestDelayedJobWeb < MiniTest::Unit::TestCase
     DelayedJobWeb
   end
 
-  def test_requeue_all
+  def test_requeue_failed
 
     dataset = Minitest::Mock.new
     where = lambda { | criteria |
@@ -22,7 +22,28 @@ class TestDelayedJobWeb < MiniTest::Unit::TestCase
 
     Time.stub(:now, time) do
       Delayed::Job.stub(:where, where) do
-        post "/requeue/all", request_data, rack_env
+        post "/requeue/failed", request_data, rack_env
+        last_response.status.must_equal 302
+      end
+    end
+
+    dataset.verify
+
+  end
+
+  def test_requeue_pending
+
+    dataset = Minitest::Mock.new
+    where = lambda { | criteria |
+      criteria.must_equal 'last_error IS NOT NULL'
+      dataset
+    }
+
+    dataset.expect(:update_all, nil, [:run_at => time, :failed_at => nil])
+
+    Time.stub(:now, time) do
+      Delayed::Job.stub(:where, where) do
+        post "/requeue/failed", request_data, rack_env
         last_response.status.must_equal 302
       end
     end

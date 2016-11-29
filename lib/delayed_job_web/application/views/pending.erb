@@ -1,6 +1,6 @@
 <h1>Pending</h1>
 <% if @jobs.any? %>
-  <form action="<%= u('requeue/all') %>" method="POST">
+  <form action="<%= u('requeue/pending') %>" method="POST">
     <%= csrf_token_tag %>
     <input type="submit" value="Enqueue All Immediately"></input>
   </form>
