@@ -55,7 +55,7 @@ end
 
 ## Authenticating with Devise and Warden
 
-This can be accomplished in the routes.rb file using an `authenticated`. Note, do not use an `authenticate` block as this forces an authentication check and redirects can be screwy, [see here](http://excid3.com/blog/rails-tip-5-authenticated-root-and-dashboard-routes-with-devise/) for more information.
+This can be accomplished in the routes.rb file using an `authenticated` callback. Note, do not use an `authenticate` callback as this forces an authentication check and redirects can be screwy, [see here](http://excid3.com/blog/rails-tip-5-authenticated-root-and-dashboard-routes-with-devise/) for more information.
 
 A simple user check looks like this:
 
