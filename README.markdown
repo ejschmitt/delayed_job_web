@@ -7,15 +7,16 @@ activerecord.
 
 Some features:
 
-* Easily view jobs enqueued, working, pending, and failed.
-* Queue any single job. or all pending jobs, to run immediately.
-* Remove a failed job, or easily remove all failed jobs.
+* Easily view enqueued, working, pending, and failed jobs.
+* Queue any single job or all pending jobs to run immediately.
+* Remove a failed job or easily remove all failed jobs.
 * Watch delayed_job operation with live ajax polling.
-* Filter delayed_jobs by queue name
+* Filter delayed_jobs by queue names (comma separated values in the input filter).
+* Reset all queue filters by clicking the reset button.
 
-The interface (yea, a ripoff of resque-web):
+The interface (yeah, a ripoff of resque-web):
 
-![Screen shot](http://dl.dropbox.com/u/1506097/Screenshots/delayed_job_web_1.png)
+![Screen shot](./delayed_job_web.png)
 
 
 Quick Start For Rails 3 and 4 Applications
