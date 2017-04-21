@@ -52,6 +52,30 @@ end
 
 `delayed_job_web` runs as a Sinatra application within the rails application. Visit it at `/delayed_job`.
 
+
+## Authenticating with Devise and Warden
+
+This can be accomplished in the routes.rb file using an `authenticated` callback. Note, do not use an `authenticate` callback as this forces an authentication check and redirects can be screwy, [see here](http://excid3.com/blog/rails-tip-5-authenticated-root-and-dashboard-routes-with-devise/) for more information.
+
+A simple user check looks like this:
+
+```ruby
+
+authenticated :user do
+  mount DelayedJobWeb, at: "/delayed_job"
+end
+
+```
+But you probably want to check for administrator permissions:
+
+```ruby
+
+authenticated :user, -> user { user.admin? }  do
+  mount DelayedJobWeb, at: "/delayed_job"
+end
+
+```
+
 ## Serving static assets
 
 If you mount the app on another route, you may encounter the CSS not working anymore. To work around this you can leverage a special HTTP header. Install it, activate it and configure it -- see below.
