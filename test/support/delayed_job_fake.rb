@@ -14,6 +14,14 @@ class Delayed::Job
     def limit(*args)
       DelayedJobFake.new
     end
+
+    def size(*args)
+      {}
+    end
+  end
+
+  def self.group(*args)
+    DelayedJobFake.new
   end
 
   def self.where(*args)

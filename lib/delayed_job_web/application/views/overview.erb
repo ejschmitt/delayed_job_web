@@ -42,4 +42,25 @@
     </td>
   </tr>
 </table>
+
+<table class="overview">
+  <tr>
+    <th>Queue</th>
+    <th>Count</th>
+  </tr>
+
+  <% delayed_jobs(nil).group(:queue).size.each do |queue, count| %>
+    <tr>
+      <td class="status">
+        <a href="<%= queue_path(queue) %>">
+          <%= queue %>
+        </a>
+      </td>
+      <td>
+      <%= count %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
 <%= poll %>
