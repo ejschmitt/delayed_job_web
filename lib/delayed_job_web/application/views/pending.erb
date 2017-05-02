@@ -1,9 +1,11 @@
 <h1>Pending</h1>
 <% if @jobs.any? %>
-  <form action="<%= u('requeue/pending') %>" method="POST">
-    <%= csrf_token_tag %>
-    <input type="submit" value="Enqueue All Immediately"></input>
-  </form>
+  <% if @allow_requeue_pending -%>
+    <form action="<%= u('requeue/pending') %>" method="POST">
+      <%= csrf_token_tag %>
+      <input type="submit" value="Enqueue All Immediately"></input>
+    </form>
+  <% end -%>
 <% end %>
 <p class="sub">
   The list below contains jobs currently being processed.

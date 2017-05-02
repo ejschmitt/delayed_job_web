@@ -101,6 +101,19 @@ Rails' will need to be configured to `config.action_dispatch.x_sendfile_header =
 
 Lighty is more `X-Sendfile`, like [outlined](http://redmine.lighttpd.net/projects/1/wiki/X-LIGHTTPD-send-file) in their wiki.
 
+Configuration
+-------------
+
+The following settings can be changed using the `.set` method in your configu.ru. For example:
+
+```ruby
+DelayedJobWeb.set(:allow_requeue_pending, false)
+```
+
+* **`allow_requeue_pending`** (default: `true`)
+
+  Controls whether the 'Enqueue all immediately' button is available on the list of Pending jobs. Hiding this button can be useful if you have jobs set to run in the future and you don't want to accidentally run them immediately.
+
 
 Contributing
 ------------

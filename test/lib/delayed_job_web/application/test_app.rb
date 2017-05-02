@@ -52,6 +52,27 @@ class TestDelayedJobWeb < MiniTest::Unit::TestCase
 
   end
 
+  def test_requeue_pending_with_requeue_pending_disallowed
+
+    app.set(:allow_requeue_pending, false)
+
+    dataset = Minitest::Mock.new
+    where = lambda { |criteria|
+      dataset
+    }
+
+    Time.stub(:now, time) do
+      Delayed::Job.stub(:where, where) do
+        post "/requeue/pending", request_data, rack_env
+        last_response.status.must_equal 302
+      end
+    end
+
+    # Expect dataset to not have received any method calls.
+    dataset.verify
+
+  end
+
   def test_requeue_id
     job = Minitest::Mock.new
     job.expect(:update_attributes, nil, [:run_at => time, :failed_at => nil])
