@@ -1,3 +1,10 @@
+## [1.4] - 2017-05-02
+
+### Added
+  - Feature: Make the "enqueue all" button optional
+  - Feature: Add `per_page` param to specify number of jobs per page
+
+
 ## [1.3] - 2017-04-21
 
 ### Added
