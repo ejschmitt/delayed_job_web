@@ -167,7 +167,7 @@ class DelayedJobWeb < Sinatra::Base
     rel =
       case type
       when :working
-        rel.where('locked_at IS NOT NULL')
+        rel.where('locked_at IS NOT NULL AND failed_at IS NULL')
       when :failed
         rel.where('last_error IS NOT NULL')
       when :pending
