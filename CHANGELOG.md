@@ -1,9 +1,13 @@
+## [1.4.2] - 2018-05-31
+
+### Fixed
+  - Merge fixes for 2 security issues. CVE-2018-7212, CVE-2017-12097
+
 ## [1.4] - 2017-05-02
 
 ### Added
   - Feature: Make the "enqueue all" button optional
   - Feature: Add `per_page` param to specify number of jobs per page
-
 
 ## [1.3] - 2017-04-21
 
