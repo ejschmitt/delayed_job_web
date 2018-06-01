@@ -45,7 +45,7 @@ class DelayedJobWeb < Sinatra::Base
 
   def url_path(*path_parts)
     url = [ path_prefix, path_parts ].join("/").squeeze('/')
-    url += "?queues=#{@queues.join(",")}" unless @queues.empty?
+    url += "?queues=#{CGI.escape(@queues.join(","))}" unless @queues.empty?
     url
   end
 
