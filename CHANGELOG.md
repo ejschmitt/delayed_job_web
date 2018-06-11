@@ -1,3 +1,9 @@
+## [1.4.3] - 2018-06-11
+
+### Fixed
+
+  - arkadiybutermanov introduced safer CVE fix. Sinatra should not have been upgraded as part of a patch release either.
+
 ## [1.4.2] - 2018-05-31
 
 ### Fixed
