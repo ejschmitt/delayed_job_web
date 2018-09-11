@@ -16,4 +16,11 @@ class TestMountedInRailsApp < MiniTest::Unit::TestCase
       assert last_response.ok?, "Received bad response: #{last_response.inspect}"
     end
   end
+
+  def test_priority
+    get '/delayed_job/priority/0'
+
+    assert last_response.ok?, "Received bad response: #{last_response.inspect}"
+  end
+
 end
