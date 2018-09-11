@@ -207,7 +207,7 @@ class DelayedJobWeb < Sinatra::Base
   end
 
   get '/priority/:priority' do
-    @jobs = delayed_job.where(priority: params[:priority]).order('created_at desc, id desc').offset(start).limit(per_page)
+    @jobs = delayed_job.where(priority: params[:priority]).order('id desc').offset(start).limit(per_page)
     @all_jobs = delayed_job
 
     erb :priority
