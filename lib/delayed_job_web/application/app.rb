@@ -57,6 +57,10 @@ class DelayedJobWeb < Sinatra::Base
     end
   end
 
+  def priority_path(priority)
+    url_path(['priority', priority])
+  end
+
   def with_queue(queue, &block)
     aux_queues = @queues
     @queues = Array(queue)
@@ -200,6 +204,13 @@ class DelayedJobWeb < Sinatra::Base
     get "/#{page}/:id.poll" do
       show_for_polling(page)
     end
+  end
+
+  get '/priority/:priority' do
+    @jobs = delayed_job.where(priority: params[:priority]).order('created_at desc, id desc').offset(start).limit(per_page)
+    @all_jobs = delayed_job
+
+    erb :priority
   end
 
   def poll

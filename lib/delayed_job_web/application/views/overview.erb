@@ -72,7 +72,9 @@
   <% delayed_jobs(nil).group(:priority).size.each do |priority, count| %>
     <tr>
       <td class="status">
-        <%= priority %>
+        <a href="<%= priority_path(priority) %>">
+          <%= priority %>
+        </a>
       </td>
       <td>
       <%= count %>
