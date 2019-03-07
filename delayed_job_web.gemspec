@@ -23,7 +23,7 @@ Gem::Specification.new do |gem|
     "README.markdown"
   ]
 
-  gem.add_runtime_dependency "sinatra",         [">= 1.4.4"]
+  gem.add_runtime_dependency "sinatra",         [">= 1.4.8"]
   gem.add_runtime_dependency "rack-protection", [">= 1.5.5"]
   gem.add_runtime_dependency "activerecord",    ["> 3.0.0"]
   gem.add_runtime_dependency "delayed_job",     ["> 2.0.3"]
