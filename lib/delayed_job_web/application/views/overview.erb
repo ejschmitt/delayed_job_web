@@ -63,4 +63,24 @@
   <% end %>
 </table>
 
+<table class="overview">
+  <tr>
+    <th>Priority</th>
+    <th>Count</th>
+  </tr>
+
+  <% delayed_jobs(nil).group(:priority).size.each do |priority, count| %>
+    <tr>
+      <td class="status">
+        <a href="<%= priority_path(priority) %>">
+          <%= priority %>
+        </a>
+      </td>
+      <td>
+      <%= count %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
 <%= poll %>
