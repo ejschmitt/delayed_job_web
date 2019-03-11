@@ -1,5 +1,5 @@
 ## [1.4.5] - 2019-03-07
-  - Bumping Sinatra to 1.4.8 to eliminate Fixnum warnings
+  - Bumping Sinatra to 1.4.8 to address Fixnum warnings
 
 ## [1.4.4] - 2018-09-14
   - Adding the ability to view jobs by priority
