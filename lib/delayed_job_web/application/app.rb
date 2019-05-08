@@ -28,7 +28,7 @@ class DelayedJobWeb < Sinatra::Base
     :reaction => :deny
 
   before do
-    @queues = (params[:queues] || "").split(",").map{|queue| queue.strip}.uniq.compact
+    @queues = (params[:queues] || "").split(",").map{|queue| h(queue.strip)}.uniq.compact
   end
 
   def current_page
