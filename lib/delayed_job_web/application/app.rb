@@ -10,6 +10,7 @@ class DelayedJobWeb < Sinatra::Base
   set :views, File.expand_path('../views', __FILE__)
 
   set :allow_requeue_pending, true
+  set :filtered_job_attributes, []
 
   # Enable sessions so we can use CSRF protection
   enable :sessions
@@ -29,6 +30,7 @@ class DelayedJobWeb < Sinatra::Base
 
   before do
     @queues = (params[:queues] || "").split(",").map{|queue| queue.strip}.uniq.compact
+    @filtered_job_attributes = settings.filtered_job_attributes
   end
 
   def current_page
