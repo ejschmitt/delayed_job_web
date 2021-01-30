@@ -146,13 +146,13 @@ class DelayedJobWeb < Sinatra::Base
 
   post "/requeue/:id" do
     job = delayed_job.find(params[:id])
-    job.update_attributes(:run_at => Time.now, :failed_at => nil)
+    job.update(run_at: Time.now, failed_at: nil)
     redirect back
   end
 
   post "/reload/:id" do
     job = delayed_job.find(params[:id])
-    job.update_attributes(:run_at => Time.now, :failed_at => nil, :locked_by => nil, :locked_at => nil, :last_error => nil, :attempts => 0)
+    job.update(run_at: Time.now, failed_at: nil, locked_by: nil, locked_at: nil, last_error: nil, attempts: 0)
     redirect back
   end
 
@@ -192,7 +192,7 @@ class DelayedJobWeb < Sinatra::Base
     @partial = false
   end
 
-  %w(overview enqueued working pending failed stats) .each do |page|
+  %w[overview enqueued working pending failed stats].each do |page|
     get "/#{page}.poll" do
       show_for_polling(page)
     end
