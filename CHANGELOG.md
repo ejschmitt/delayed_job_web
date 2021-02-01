@@ -1,3 +1,9 @@
+## [1.4.4] - 2020-02-01
+
+### Fixed
+
+  - atstockland updated requeue and reload to use update method instead of deprecated update_attributes.
+
 ## [1.4.3] - 2018-06-11
 
 ### Fixed
