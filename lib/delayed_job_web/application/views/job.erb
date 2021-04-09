@@ -22,7 +22,15 @@
     <% end %>
     <dt>Handler</dt>
     <dd>
-    <pre><%=h job.handler %></pre>
+    <pre>
+      <% if @filtered_job_attributes.empty? %>
+        <%=h job.handler %>
+      <% else %>
+        <% job_wrapper = YAML.load_dj(job.handler) %>
+        <% @filtered_job_attributes.each { |key| job_wrapper.job_data.delete(key) } %>
+        <%=h job_wrapper.to_yaml %></pre>
+      <% end %>
+    </pre>
     </dd>
     <% if job.last_error %>
       <dt>Last Error</dt>

@@ -114,6 +114,10 @@ DelayedJobWeb.set(:allow_requeue_pending, false)
 
   Controls whether the 'Enqueue all immediately' button is available on the list of Pending jobs. Hiding this button can be useful if you have jobs set to run in the future and you don't want to accidentally run them immediately.
 
+* **`filtered_job_attributes`** (default: `[]`)
+
+  Lets you set parts of the job handler job_data that can be filtered. eg. setting this to ["arguments"], removes the job arguments from the UI.
+
 
 Contributing
 ------------
