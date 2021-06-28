@@ -46,8 +46,8 @@ You probably want to password protect the interface, an easy way is to add somet
 ```ruby
 if Rails.env.production?
   DelayedJobWeb.use Rack::Auth::Basic do |username, password|
-    ActiveSupport::SecurityUtils.variable_size_secure_compare('username', username) &&
-      ActiveSupport::SecurityUtils.variable_size_secure_compare('password', password)
+    ActiveSupport::SecurityUtils.secure_compare('username', username) &&
+      ActiveSupport::SecurityUtils.secure_compare('password', password)
   end
 end
 ```
