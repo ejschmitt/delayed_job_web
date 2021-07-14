@@ -120,7 +120,10 @@ class DelayedJobWeb < Sinatra::Base
 
   %w(enqueued working pending failed).each do |page|
     get "/#{page}" do
-      @jobs     = delayed_jobs(page.to_sym, @queues).order('created_at desc, id desc').offset(start).limit(per_page)
+      @jobs = delayed_jobs(page.to_sym, @queues).offset(start).limit(per_page)
+      @jobs = @jobs.is_a?(Mongoid::Criteria) ?
+                  @jobs.order_by(:created_at.desc, :id.desc) :
+                  @jobs.order('created_at desc, id desc')
       @all_jobs = delayed_jobs(page.to_sym, @queues)
       @allow_requeue_pending = settings.allow_requeue_pending
       erb page.to_sym
@@ -161,22 +164,42 @@ class DelayedJobWeb < Sinatra::Base
     redirect u('failed')
   end
 
+  def delayed_jobs_grouped_by(field)
+    resource = delayed_jobs(nil)
+    if resource.is_a?(Mongoid::Criteria)
+      pipeline = resource.group(:_id => ('$%s' % field), :count => {'$sum' => 1}).pipeline
+      delayed_job.collection.aggregate(pipeline)
+          .map{|r| Hash[r['_id'],r['count']]}
+          .reduce(Hash.new, :merge)
+    else
+      group(field).size
+    end
+  end
+
   def delayed_jobs(type, queues = [])
-    rel = delayed_job
+    rel = delayed_job.all
 
     rel =
       case type
       when :working
-        rel.where('locked_at IS NOT NULL AND failed_at IS NULL')
+        rel.is_a?(Mongoid::Criteria) ?
+          rel.where(:locked_at.ne => nil, :failed_at => nil) :
+          rel.where('locked_at IS NOT NULL AND failed_at IS NULL')
       when :failed
-        rel.where('last_error IS NOT NULL')
+        rel.is_a?(Mongoid::Criteria) ?
+          rel.where(:last_error.ne => nil) :
+          rel.where('last_error IS NOT NULL')
       when :pending
         rel.where(:attempts => 0, :locked_at => nil)
       else
         rel
       end
 
-    rel = rel.where(:queue => queues) unless queues.empty?
+    unless queues.empty?
+      rel = rel.is_a?(Mongoid::Criteria) ?
+                rel.where(:queue.in => queues) :
+                rel.where(:queue => queues)
+    end
 
     rel
   end
