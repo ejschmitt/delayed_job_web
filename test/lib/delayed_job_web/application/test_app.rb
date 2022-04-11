@@ -75,7 +75,7 @@ class TestDelayedJobWeb < MiniTest::Unit::TestCase
 
   def test_requeue_id
     job = Minitest::Mock.new
-    job.expect(:update_attributes, nil, [:run_at => time, :failed_at => nil])
+    job.expect(:update, nil, [:run_at => time, :failed_at => nil])
 
     find = lambda { | id |
       id.must_equal "1"

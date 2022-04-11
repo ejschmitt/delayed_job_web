@@ -150,13 +150,13 @@ class DelayedJobWeb < Sinatra::Base
 
   post "/requeue/:id" do
     job = delayed_job.find(params[:id])
-    job.update_attributes(:run_at => Time.now, :failed_at => nil)
+    job.update(:run_at => Time.now, :failed_at => nil)
     redirect back
   end
 
   post "/reload/:id" do
     job = delayed_job.find(params[:id])
-    job.update_attributes(:run_at => Time.now, :failed_at => nil, :locked_by => nil, :locked_at => nil, :last_error => nil, :attempts => 0)
+    job.update(:run_at => Time.now, :failed_at => nil, :locked_by => nil, :locked_at => nil, :last_error => nil, :attempts => 0)
     redirect back
   end
 
@@ -208,7 +208,7 @@ class DelayedJobWeb < Sinatra::Base
 
   get '/priority/:priority' do
     @jobs = delayed_job.where(priority: params[:priority]).order('id desc').offset(start).limit(per_page)
-    @all_jobs = delayed_job
+    @all_jobs = delayed_job.where(priority: params[:priority])
 
     erb :priority
   end
