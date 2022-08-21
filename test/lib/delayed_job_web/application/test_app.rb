@@ -2,7 +2,7 @@ require 'test_helper'
 require 'support/delayed_job_fake'
 require 'delayed_job_web/application/app'
 
-class TestDelayedJobWeb < MiniTest::Unit::TestCase
+class TestDelayedJobWeb < Minitest::Test
 
   include Rack::Test::Methods
 
@@ -11,99 +11,79 @@ class TestDelayedJobWeb < MiniTest::Unit::TestCase
   end
 
   def test_requeue_failed
+    where = lambda { |criteria|
+      assert_equal criteria, 'last_error IS NOT NULL'
 
-    dataset = Minitest::Mock.new
-    where = lambda { | criteria |
-      criteria.must_equal 'last_error IS NOT NULL'
-      dataset
+      Minitest::Mock.new.expect(:update_all, nil, run_at: time, failed_at: nil)
     }
-
-    dataset.expect(:update_all, nil, [:run_at => time, :failed_at => nil])
 
     Time.stub(:now, time) do
       Delayed::Job.stub(:where, where) do
         post "/requeue/failed", request_data, rack_env
-        last_response.status.must_equal 302
+
+        assert_equal 302, last_response.status
       end
     end
-
-    dataset.verify
-
   end
 
   def test_requeue_pending
-
-    dataset = Minitest::Mock.new
-    where = lambda { | criteria |
-      criteria.must_equal :attempts => 0, :locked_at => nil
-      dataset
+    where = lambda { |criteria|
+      assert_equal criteria, { attempts: 0, locked_at: nil }
+      Minitest::Mock.new.expect(:update_all, nil, run_at: time, failed_at: nil)
     }
-
-    dataset.expect(:update_all, nil, [:run_at => time, :failed_at => nil])
 
     Time.stub(:now, time) do
       Delayed::Job.stub(:where, where) do
         post "/requeue/pending", request_data, rack_env
-        last_response.status.must_equal 302
+        assert_equal 302, last_response.status
       end
     end
-
-    dataset.verify
-
   end
 
   def test_requeue_pending_with_requeue_pending_disallowed
-
     app.set(:allow_requeue_pending, false)
 
-    dataset = Minitest::Mock.new
     where = lambda { |criteria|
-      dataset
+      raise 'should not be called'
     }
 
     Time.stub(:now, time) do
       Delayed::Job.stub(:where, where) do
         post "/requeue/pending", request_data, rack_env
-        last_response.status.must_equal 302
+        assert_equal 302, last_response.status
       end
     end
-
-    # Expect dataset to not have received any method calls.
-    dataset.verify
-
   end
 
   def test_requeue_id
-    job = Minitest::Mock.new
-    job.expect(:update_attributes, nil, [:run_at => time, :failed_at => nil])
-
-    find = lambda { | id |
-      id.must_equal "1"
-      job
+    find = lambda { |id|
+      assert_equal id, '1'
+      Minitest::Mock.new.expect(:update, nil, run_at: time, failed_at: nil)
     }
 
     Time.stub(:now, time) do
       Delayed::Job.stub(:find, find) do
         post "/requeue/1", request_data, rack_env
-        last_response.status.must_equal 302
+        assert 302, last_response.status
       end
     end
-
-    job.verify
   end
-
-  private
 
   def time
     @time ||= Time.now
   end
 
+  private
+
+  def csrf_token
+    @csrf_roken ||= Rack::Protection::AuthenticityToken.random_token
+  end
+
   def rack_env
-    {'rack.session' => {:csrf => "123"}}
+    { 'rack.session' => { csrf: csrf_token } }
   end
 
   def request_data
-    {"authenticity_token" => "123"}
+    { 'authenticity_token' => csrf_token }
   end
-
 end
