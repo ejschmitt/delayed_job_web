@@ -218,10 +218,4 @@ class DelayedJobWeb < Sinatra::Base
     @jobs = delayed_jobs(page.to_sym, @queues)
     erb(page.to_sym, {:layout => false})
   end
-
 end
-
-# Run the app!
-#
-# puts "Hello, you're running delayed_job_web"
-# DelayedJobWeb.run!
