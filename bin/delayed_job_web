@@ -1,10 +1,11 @@
 #!/usr/bin/env ruby
-#
+# frozen_string_literal: true
+
 begin
-  require 'delayed_job_web/application/app.rb'
+  require 'delayed_job_web/application/app'
 rescue LoadError => e
   require 'rubygems'
-  path = File.expand_path '../../lib', __FILE__
-  $:.unshift(path) if File.directory?(path) && !$:.include?(path)
-  require 'delayed_job_web/application/app.rb'
+  path = File.expand_path '../lib', __dir__
+  $LOAD_PATH.unshift(path) if File.directory?(path) && $LOAD_PATH.exclude?(path)
+  require 'delayed_job_web/application/app'
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'bundler'
 require 'rake/testtask'
 require 'rdoc/task'
@@ -8,10 +10,10 @@ Rake::TestTask.new do |test|
   test.verbose = true
 end
 
-task :default => :test
+task default: :test
 
 Rake::RDocTask.new do |rdoc|
-  version = File.exist?('VERSION') ? File.read('VERSION') : ""
+  version = File.exist?('VERSION') ? File.read('VERSION') : ''
 
   rdoc.rdoc_dir = 'rdoc'
   rdoc.title = "delayed_job_web #{version}"

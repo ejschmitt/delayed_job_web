@@ -1,7 +1,9 @@
-$:.unshift File.dirname(__FILE__)
+# frozen_string_literal: true
 
-require "bundler"
+$LOAD_PATH.unshift File.dirname(__FILE__)
+
+require 'bundler'
 Bundler.setup(:default, :development)
-require "minitest/autorun"
+require 'minitest/autorun'
 
 ENV['RACK_ENV'] = 'test'
