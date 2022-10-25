@@ -4,8 +4,11 @@ require 'sinatra/base'
 require 'active_support'
 require 'active_record'
 require 'delayed_job'
+require_relative 'helpers'
 
 class DelayedJobWeb < Sinatra::Base
+  include Helpers
+
   set :root, File.dirname(__FILE__)
   set :static, true
   set :public_folder, File.expand_path('public', __dir__)
@@ -33,75 +36,8 @@ class DelayedJobWeb < Sinatra::Base
     @queues = (params[:queues] || '').split(',').map(&:strip).uniq.compact
   end
 
-  def current_page
-    url_path request.path_info.sub('/', '')
-  end
-
-  def start
-    params[:start].to_i
-  end
-
-  def per_page
-    params[:per_page].to_i.positive? ? params[:per_page].to_i : 20
-  end
-
-  def url_path(*path_parts)
-    url = [path_prefix, path_parts].join('/').squeeze('/')
-    url += "?queues=#{CGI.escape(@queues.join(','))}" unless @queues.empty?
-    url
-  end
-
-  alias u url_path
-
-  def queue_path(queue)
-    with_queue(queue) do
-      url_path(:overview)
-    end
-  end
-
-  def with_queue(queue)
-    aux_queues = @queues
-    @queues = Array(queue)
-    result  = yield
-    @queues = aux_queues
-    result
-  end
-
-  def h(text)
-    Rack::Utils.escape_html(text)
-  end
-
-  def path_prefix
-    request.env['SCRIPT_NAME']
-  end
-
-  def tabs
-    [
-      { name: 'Overview', path: '/overview' },
-      { name: 'Enqueued', path: '/enqueued' },
-      { name: 'Working', path: '/working' },
-      { name: 'Pending', path: '/pending' },
-      { name: 'Failed', path: '/failed' },
-      { name: 'Stats', path: '/stats' }
-    ]
-  end
-
-  def delayed_job
-    Delayed::Job
-  rescue StandardError
-    false
-  end
-
-  def csrf_token
-    # Set up by Rack::Protection
-    session[:csrf]
-  end
-
-  def csrf_token_tag
-    # If csrf_token is nil, and we submit a blank string authenticity_token
-    # param, Rack::Protection will fail.
-    "<input type='hidden' name='authenticity_token' value='#{h csrf_token}'>" if csrf_token
-  end
+  #
+  # GET routes
 
   get '/overview' do
     if delayed_job
@@ -127,6 +63,23 @@ class DelayedJobWeb < Sinatra::Base
       erb page.to_sym
     end
   end
+
+  get '/?' do
+    redirect u(:overview)
+  end
+
+  %w[overview enqueued working pending failed stats].each do |page|
+    get "/#{page}.poll" do
+      show_for_polling(page)
+    end
+
+    get "/#{page}/:id.poll" do
+      show_for_polling(page)
+    end
+  end
+
+  #
+  # POST routes
 
   post '/remove/:id' do
     delayed_job.find(params[:id]).delete
@@ -170,64 +123,5 @@ class DelayedJobWeb < Sinatra::Base
   post '/failed/clear' do
     delayed_jobs(:failed, @queues).delete_all
     redirect u('failed')
-  end
-
-  def delayed_jobs(type, queues = [])
-    rel = delayed_job
-
-    rel =
-      case type
-      when :working
-        rel.where('locked_at IS NOT NULL AND failed_at IS NULL')
-      when :failed
-        rel.where.not(last_error: nil)
-      when :pending
-        rel.where(attempts: 0, locked_at: nil)
-      else
-        rel
-      end
-
-    rel = rel.where(queue: queues) unless queues.empty?
-
-    rel
-  end
-
-  get '/?' do
-    redirect u(:overview)
-  end
-
-  def partial(template, local_vars = {})
-    @partial = true
-    erb(template.to_sym, { layout: false }, local_vars)
-  ensure
-    @partial = false
-  end
-
-  %w[overview enqueued working pending failed stats].each do |page|
-    get "/#{page}.poll" do
-      show_for_polling(page)
-    end
-
-    get "/#{page}/:id.poll" do
-      show_for_polling(page)
-    end
-  end
-
-  def poll
-    text =
-      if @polling
-        "Last Updated: #{Time.zone.now.strftime('%H:%M:%S')}"
-      else
-        "<a href='#{u("#{request.path_info}.poll")}' rel='poll'>Live Poll</a>"
-      end
-    "<p class='poll'>#{text}</p>"
-  end
-
-  def show_for_polling(page)
-    content_type 'text/html'
-    @polling = true
-    # show(page.to_sym, false).gsub(/\s{1,}/, ' ')
-    @jobs = delayed_jobs(page.to_sym, @queues)
-    erb(page.to_sym, { layout: false })
   end
 end
