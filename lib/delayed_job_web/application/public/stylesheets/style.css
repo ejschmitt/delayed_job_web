@@ -81,6 +81,21 @@ pre { font-family:Courier New; line-height:1.4em; }
 #main ul.job li dl dd.error a {font-family:Monaco, "Courier New", monospace; font-size:90%; }
 #main ul.job li dl dd.error pre { margin-top:3px; line-height:1.3;}
 
+#main div.job {}
+#main div.job {background:-webkit-gradient(linear, left top, left bottom, from(#efefef), to(#fff)) #efefef; margin-top:10px; padding:10px; overflow:hidden; -webkit-border-radius:5px; border:1px solid #ccc; }
+#main div.job dl dt {font-size:80%; color:#999; width:60px; float:left; padding-top:1px; text-align:right;}
+#main div.job dl dd {margin-bottom:10px; margin-left:70px;}
+#main div.job dl dd .retried { float:right; text-align: right; }
+#main div.job dl dd .retried .remove { margin-top: 8px; }
+#main div.job li.hover dl dd .retried .remove { display:block; }
+#main div.job dl dd .controls { float:right; }
+#main div.job dl dd .controls form { display: inline; }
+#main div.job.hover dl dd .controls { display:block; }
+#main div.job dl dd code, #main div.failed dl dd pre { font-family:Monaco, "Courier New", monospace; font-size:90%; white-space: pre-wrap;}
+#main div.job dl dd.error a {font-family:Monaco, "Courier New", monospace; font-size:90%; }
+#main div.job dl dd.error pre { margin-top:3px; line-height:1.3;}
+
+
 #main p.pagination { background:#efefef; padding:10px; overflow:hidden;}
 #main p.pagination a.less { float:left;}
 #main p.pagination a.more { float:right;}

@@ -16,6 +16,10 @@ module Helpers
     url_path request.path_info.sub('/', '')
   end
 
+  def datetime_with_seconds(time)
+    time&.strftime('%Y-%m-%d %H:%M:%S')
+  end
+
   def delayed_job
     Delayed::Job
   rescue StandardError
@@ -96,7 +100,7 @@ module Helpers
       { name: 'Working',  path: '/working' },
       { name: 'Pending',  path: '/pending' },
       { name: 'Failed',   path: '/failed' },
-      { name: 'Workers',  path: '//workers' },
+      { name: 'Workers',  path: '/workers' },
       { name: 'Stats',    path: '/stats' }
     ]
   end
@@ -111,9 +115,9 @@ module Helpers
 
   def with_queue(queue)
     aux_queues = @queues
-    @queues = Array(queue)
-    result  = yield
-    @queues = aux_queues
+    @queues    = Array(queue)
+    result     = yield
+    @queues    = aux_queues
     result
   end
 end

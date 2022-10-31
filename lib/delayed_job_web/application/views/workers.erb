@@ -1,0 +1,49 @@
+<h1>
+  Workers
+</h1>
+
+<p class="sub">
+  The list below displays the processes consuming jobs.
+</p>
+
+<table class="workers">
+  <thead>
+    <tr>
+      <th>Hostname</th>
+      <th>IP Address</th>
+      <th>Worker ID</th>
+      <th>Queues</th>
+      <th>Last Seen At</th>
+      <th>Started At</th>
+      <th>Stopped At</th>
+      <th>Job ID</th>
+      <th>Jobs Completed</th>
+      <th>Last Job Started At</th>
+      <th>Last Job Completed At</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @workers.find_each do |worker| %>
+      <tr>
+        <td> <%= worker.hostname %> </td>
+        <td> <%= worker.ip_address %> </td>
+        <td> <%= worker.worker_id %> </td>
+        <td> <%= (worker.queues || []).join(', ') %> </td>
+        <td> <%= datetime_with_seconds worker.last_seen_at %> </td>
+        <td> <%= datetime_with_seconds worker.started_at %> </td>
+        <td> <%= datetime_with_seconds worker.stopped_at %> </td>
+
+        <td>
+          <a href="/delayed_job/job/<%= worker.job_id %>">
+            <%= worker.job_id %>
+          </a>
+        </td>
+
+        <td> <%= worker.job_count %> </td>
+        <td> <%= datetime_with_seconds worker.last_job_started_at %> </td>
+        <td> <%= datetime_with_seconds worker.last_job_completed_at %> </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -39,6 +39,17 @@ class DelayedJobWeb < Sinatra::Base
   #
   # GET routes
 
+  get '/job/:id' do
+    @job = delayed_job.find_by(id: params[:id])
+
+    if @job.nil?
+      redirect back
+      return
+    end
+
+    erb :jobs
+  end
+
   get '/overview' do
     if delayed_job
       erb :overview
@@ -46,6 +57,11 @@ class DelayedJobWeb < Sinatra::Base
       @message = 'Unable to connected to Delayed::Job database'
       erb :error
     end
+  end
+
+  get '/workers' do
+    @workers = ::System::Worker.all
+    erb :workers
   end
 
   get '/stats' do
@@ -58,6 +74,7 @@ class DelayedJobWeb < Sinatra::Base
         page.to_sym,
         @queues
       ).order('created_at desc, id desc').offset(start).limit(per_page)
+
       @all_jobs = delayed_jobs(page.to_sym, @queues)
       @allow_requeue_pending = settings.allow_requeue_pending
       erb page.to_sym
@@ -93,11 +110,13 @@ class DelayedJobWeb < Sinatra::Base
         failed_at: nil
       )
     end
+
     redirect back
   end
 
   post '/requeue/failed' do
     delayed_jobs(:failed, @queues).update_all(run_at: Time.zone.now, failed_at: nil)
+
     redirect back
   end
 

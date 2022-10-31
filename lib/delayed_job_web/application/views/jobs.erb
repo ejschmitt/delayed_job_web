@@ -1,0 +1,11 @@
+<h1>
+  Job #<%= @job.id %>
+</h1>
+
+<p class="sub">
+  Details for a job.
+</p>
+
+<div class="job">
+  <%= erb :job, locals: { job: @job }, layout: false %>
+</div>
