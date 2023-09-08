@@ -1,6 +1,6 @@
 <h1>Failed Jobs</h1>
 <% if @jobs.any? %>
-  <form action="<%= u('failed/clear') %>" method="POST">
+  <form action="<%= u('failed/clear') %>" method="POST" onsubmit="return confirm('Are you sure you want to clear all failed jobs?');">
     <%= csrf_token_tag %>
     <input type="submit" value="Clear Failed Jobs"></input>
   </form>
