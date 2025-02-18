@@ -27,6 +27,11 @@ class DelayedJobWeb < Sinatra::Base
     # Deny the request, don't clear the session
     :reaction => :deny
 
+  configure :development do
+    # Allow any host in development mode
+    set :host_authorization, { permitted_hosts: [] }
+  end
+
   before do
     @queues = (params[:queues] || "").split(",").map{|queue| queue.strip}.uniq.compact
   end
