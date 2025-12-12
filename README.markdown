@@ -2,8 +2,7 @@ delayed_job_web
 ===============
 
 A [resque][0] inspired (read: stolen) interface for delayed_job.
-This gem is written to work with rails 3 and 4 applications using
-activerecord.
+This gem is written to work with rails 3 and 4 applications using activerecord 3 and 4 but it is documented to also work with rails 5, 6 and 7.
 
 Some features:
 
@@ -19,7 +18,7 @@ The interface (yeah, a ripoff of resque-web):
 ![Screen shot](./delayed_job_web.png)
 
 
-Quick Start For Rails 3 and 4 Applications
+Quick Start For Rails versions 3 through 7 Applications
 ------------------------------------
 
 Add the dependency to your Gemfile
