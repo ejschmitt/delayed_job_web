@@ -60,5 +60,11 @@
         <%=h job.failed_at %>
       </dd>
     <% end %>
+    <% job.attribute_names.excluding('id', 'priority', 'attempts', 'queue', 'handler', 'last_error', 'run_at', 'locked_at', 'locked_by', 'failed_at').each do |column| %>
+      <dt><%= column %></dt>
+      <dd>
+        <%=h eval("job.#{column}") %>
+      </dd>
+    <% end %>
   </dl>
 </li>
