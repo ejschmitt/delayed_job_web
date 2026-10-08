@@ -120,11 +120,15 @@ class DelayedJobWeb < Sinatra::Base
 
   %w(enqueued working pending failed).each do |page|
     get "/#{page}" do
-      @jobs     = delayed_jobs(page.to_sym, @queues).order('created_at desc, id desc').offset(start).limit(per_page)
-      @all_jobs = delayed_jobs(page.to_sym, @queues)
-      @allow_requeue_pending = settings.allow_requeue_pending
+      load_job_list(page.to_sym)
       erb page.to_sym
     end
+  end
+
+  def load_job_list(page)
+    @jobs     = delayed_jobs(page, @queues).order('created_at desc, id desc').offset(start).limit(per_page)
+    @all_jobs = delayed_jobs(page, @queues)
+    @allow_requeue_pending = settings.allow_requeue_pending
   end
 
   post "/remove/:id" do
@@ -214,8 +218,11 @@ class DelayedJobWeb < Sinatra::Base
   def show_for_polling(page)
     content_type "text/html"
     @polling = true
-    # show(page.to_sym, false).gsub(/\s{1,}/, ' ')
-    @jobs = delayed_jobs(page.to_sym, @queues)
+    if %w(enqueued working pending failed).include?(page)
+      load_job_list(page.to_sym)
+    else
+      @jobs = delayed_jobs(page.to_sym, @queues)
+    end
     erb(page.to_sym, {:layout => false})
   end
 end
